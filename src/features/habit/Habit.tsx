@@ -1,17 +1,9 @@
 import { useParams } from "react-router-dom";
-import { useCheckList, useHabit } from "./store/useHabit";
 
 export function Habit() {
   const { id } = useParams();
-  const setCheckList = useCheckList((state) => state.setCheckList);
-  const habitCheckList = useCheckList((state) =>
-    state.checkList.find((v) => v.habitId === id),
-  );
-  const habitTitle = useHabit(
-    (state) => state.habits.find((v) => v.id === id)?.title,
-  );
 
-  if (!id || !habitCheckList) {
+  if (!id) {
     return <div>404 띄우기</div>;
   }
 
@@ -19,14 +11,12 @@ export function Habit() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto rounded-2xl border border-gray-200 bg-white shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
-          <div className="text-lg font-semibold text-gray-800">
-            {habitTitle ? habitTitle : "Habit"}
-          </div>
+          <div className="text-lg font-semibold text-gray-800">{"Habit"}</div>
           <div className="text-sm text-gray-500">30일</div>
         </div>
         <div className="w-xl flex items-center justify-center mx-auto">
           <div className="grid grid-cols-5 gap-4">
-            {habitCheckList.checkList.map((isChecked, i) => (
+            {/* {[].checkList.map((isChecked, i) => (
               <div className="w-full flex justify-center">
                 <button
                   key={i}
@@ -44,7 +34,7 @@ export function Habit() {
                   {i + 1}
                 </button>
               </div>
-            ))}
+            ))} */}
           </div>
         </div>
       </div>

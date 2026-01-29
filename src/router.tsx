@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Home from "./Home";
-import { Habit } from "./Habit";
+import { Habit } from "./features/habit/Habit";
+import { LoginPage } from "./features/auth/LoginPage";
 
 export const router = createBrowserRouter([
   {
@@ -10,5 +11,9 @@ export const router = createBrowserRouter([
   {
     path: "/habit/:id",
     element: <Habit />,
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
   },
 ]);

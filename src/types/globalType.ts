@@ -1,7 +1,7 @@
 export interface IHabitCard {
-  id: string;
-  title: string;
-  startDate: string;
+  habitId: string;
+  habitTitle: string;
+  createdAt: string;
 }
 export interface IHabitCheck {
   habitId: string;
