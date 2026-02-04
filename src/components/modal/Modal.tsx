@@ -2,14 +2,14 @@ import { useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 type ModalProps = {
-  open: boolean;
+  isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
 };
 
-export function Modal({ open, onClose, children }: ModalProps) {
+export function Modal({ isOpen, onClose, children }: ModalProps) {
   useEffect(() => {
-    if (!open) return;
+    if (!isOpen) return;
 
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -17,16 +17,16 @@ export function Modal({ open, onClose, children }: ModalProps) {
 
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [open, onClose]);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
-    if (open) document.body.style.overflow = "hidden";
+    if (isOpen) document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [open]);
+  }, [isOpen]);
 
-  if (!open || typeof document === "undefined") return null;
+  if (!isOpen || typeof document === "undefined") return null;
 
   return createPortal(
     <div
@@ -40,6 +40,6 @@ export function Modal({ open, onClose, children }: ModalProps) {
         {children}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

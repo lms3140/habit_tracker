@@ -7,10 +7,11 @@ import { Modal } from "./components/modal/Modal";
 import { HabitCardSkeleton } from "./features/habit/HabitCardSkeleton";
 import type { IHabitCard } from "./types/globalType";
 import { useNavigate } from "react-router-dom";
+import { useAuthTokenStore } from "./store/useAuthTokenStore";
 
 function Home() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const { token } = useAuthTokenStore();
   const [isModalOpen, setModalOpen] = useState(false);
 
   const { isLoading, isError, error, data } = useQuery<IHabitCard[]>({
@@ -51,7 +52,7 @@ function Home() {
           <button onClick={() => setModalOpen((prev) => !prev)}>하이</button>
         </div>
         <Modal
-          open={isModalOpen}
+          isOpen={isModalOpen}
           onClose={() => {
             setModalOpen(false);
           }}

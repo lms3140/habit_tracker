@@ -2,8 +2,10 @@ import { useState, type FormEvent, type ReactElement } from "react";
 import { postData } from "../../apis/fetch";
 import { apiUrl } from "../../apis/env";
 import { useNavigate } from "react-router-dom";
+import { useAuthTokenStore } from "../../store/useAuthTokenStore";
 
 export function LoginPage() {
+  const { setToken } = useAuthTokenStore();
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
   const navigate = useNavigate();
@@ -16,8 +18,8 @@ export function LoginPage() {
         password: pw,
       },
     });
-    const token = resp.token;
-    localStorage.setItem("token", token);
+    const token = await resp.token;
+    setToken(token);
     navigate("/");
   };
 
