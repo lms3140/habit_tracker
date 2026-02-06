@@ -1,29 +1,32 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import type { HabitDay } from "../habitType";
 
-interface HabitDay {
-  habitId: number;
-  isChecked: boolean;
-  habitIndex: number;
-  habitComment: string;
-}
+type HabitDayListState = {
+  habitDayList: (HabitDay | null)[];
+  updateHabitDayAt: (index: number, updated: HabitDay) => void;
+  resetHabitDayList: () => void;
+};
+export const useHabitDayListStore = create<HabitDayListState>((set) => ({
+  habitDayList: new Array(30).fill(null),
+  updateHabitDayAt: (index, updated) =>
+    set((state) => ({
+      habitDayList: state.habitDayList.map((item, i) =>
+        i === index ? updated : item,
+      ),
+    })),
+  resetHabitDayList: () => set({ habitDayList: new Array(30).fill(null) }),
+}));
 
-type HabitDayState = {
-  habitDay: HabitDay | null;
-  setHabitDay: (habitDay: HabitDay) => void;
-  clearHabitDay: () => void;
+type HabitDayIndexState = {
+  habitIndex: number | null;
+  setHabitIndex: (index: number | null) => void;
+  clearHabitIndex: () => void;
 };
 
-export const useHabitDayStore = create<HabitDayState>()(
-  persist(
-    (set) => ({
-      habitDay: null,
-      setHabitDay: (habitDay) => set({ habitDay }),
-      clearHabitDay: () => set({ habitDay: null }),
-    }),
-    {
-      name: "habit-day",
-      partialize: (state) => ({ habitDay: state.habitDay }),
-    },
-  ),
-);
+export const useHabitDayIndexStore = create<HabitDayIndexState>((set) => ({
+  habitIndex: null,
+
+  setHabitIndex: (index) => set({ habitIndex: index }),
+
+  clearHabitIndex: () => set({ habitIndex: null }),
+}));

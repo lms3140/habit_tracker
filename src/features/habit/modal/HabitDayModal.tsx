@@ -1,36 +1,51 @@
-import { useForm } from "react-hook-form";
-import { postAuthData } from "../../../apis/fetch";
-import { apiUrl } from "../../../apis/env";
-import { useAuthTokenStore } from "../../../store/useAuthTokenStore";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useModal } from "../../../hooks/useModal";
+import { HabitDayForm } from "./components/HabitDayForm";
+import { HabitDayInfo } from "./components/HabitDayInfo";
+import {
+  useHabitDayIndexStore,
+  useHabitDayListStore,
+} from "../store/HabitDayStore";
+import { useHabitDayModalStore } from "../store/HabitModalStore";
 
-type HabitDayModalProps = {
-  habitId: number;
-  habitIndex: number;
-};
+export function HabitDayModal() {
+  const { id } = useParams();
+  const { modalClose } = useModal();
+  const { setForceEdit, forceEdit } = useHabitDayModalStore();
+  const { habitIndex } = useHabitDayIndexStore();
+  const { habitDayList } = useHabitDayListStore();
+  console.log(habitDayList);
+  useEffect(() => {
+    if (!id || habitIndex === null) {
+      modalClose();
+    }
+  }, [id, habitIndex]);
 
-type HabitDayForm = {
-  habitComment: string;
-};
+  if (habitIndex === null) {
+    return <></>;
+  }
 
-export function HabitDayModal({ habitId, habitIndex }: HabitDayModalProps) {
-  const { register, handleSubmit } = useForm<HabitDayForm>();
-  const { token } = useAuthTokenStore();
-  const onSubmitHabitDay = (data: HabitDayForm) => {
-    const postData = {
-      habitId,
-      isChecked: true,
-      habitIndex,
-      habitComment: data.habitComment,
-    };
+  if (!id) {
+    return <div className="w-full"></div>;
+  }
 
-    postAuthData({ url: `${apiUrl}/add`, data: postData, token });
-  };
+  const editMode = forceEdit || !habitDayList[habitIndex];
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmitHabitDay)}>
-        <textarea {...register("habitComment")} />
-      </form>
+    <div className="w-full">
+      <div>{editMode ? <HabitDayForm habitId={id} /> : <HabitDayInfo />}</div>
+      {editMode ? null : (
+        <div>
+          <button
+            onClick={() => {
+              setForceEdit(true);
+            }}
+          >
+            수정하기
+          </button>
+        </div>
+      )}
     </div>
   );
 }

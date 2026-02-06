@@ -31,6 +31,9 @@ function Home() {
         navigate("/login", { replace: true });
       }
     }
+    if (!token) {
+      navigate("/login", { replace: true });
+    }
   }, [isError, error?.message]);
 
   return (
@@ -57,7 +60,7 @@ function Home() {
             setModalOpen(false);
           }}
         >
-          <div>ㅎㅎ</div>
+          <div>테스트</div>
         </Modal>
       </div>
     </div>
