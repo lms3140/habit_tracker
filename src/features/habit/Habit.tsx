@@ -1,41 +1,48 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getAuthData, postAuthData } from "../../apis/fetch";
+import { useEffect } from "react";
+import { Navigate, useParams } from "react-router-dom";
 import { apiUrl } from "../../apis/env";
-import type { HabitDay } from "./habitType";
+import { getAuthData } from "../../apis/fetch";
 import { Modal } from "../../components/modal/Modal";
 import { useModal } from "../../hooks/useModal";
 import { useAuthTokenStore } from "../../store/useAuthTokenStore";
+import type { HabitDay } from "./habitType";
+import { HabitDayModal } from "./modal/HabitDayModal";
+import {
+  useHabitDayIndexStore,
+  useHabitDayListStore,
+} from "./store/HabitDayStore";
 
 export function Habit() {
   const { id } = useParams();
   const { token } = useAuthTokenStore();
-  const [habitDayList, setHabitDayList] = useState<(HabitDay | null)[]>(
-    new Array(30).fill(null),
-  );
+  const { habitDayList, updateHabitDayAt, resetHabitDayList } =
+    useHabitDayListStore();
+  const { setHabitIndex } = useHabitDayIndexStore();
   const { isModalOpen, modalClose, modalOpen } = useModal();
-  const { isSuccess, isError, error, data } = useQuery<HabitDay[]>({
+  const { isSuccess, isError, data } = useQuery<HabitDay[]>({
     queryKey: ["habitDayList", id],
     queryFn: async () => {
       return await getAuthData({ url: `${apiUrl}/habit-day/${id}`, token });
     },
-    enabled: Boolean(id),
+    enabled: Boolean(id) && Boolean(token),
   });
 
   useEffect(() => {
     if (!isSuccess || !data) return;
-    setHabitDayList(() => {
-      const list = new Array(30).fill(null);
-      data.forEach((day) => {
-        list[day.habitIndex] = day;
-      });
-      return list;
+    data.forEach((day, i) => {
+      updateHabitDayAt(i, day);
     });
-  }, [isSuccess]);
+    return () => resetHabitDayList();
+  }, [isSuccess, data, updateHabitDayAt]);
+
+  const handleClickDay = (index: number) => {
+    setHabitIndex(index);
+    modalOpen();
+  };
 
   if (isError) {
-    return <div>404 띄우기</div>;
+    return <Navigate to={"/login"} />;
   }
 
   return (
@@ -59,7 +66,9 @@ export function Habit() {
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }
             `}
-                  onClick={modalOpen}
+                  onClick={() => {
+                    handleClickDay(i);
+                  }}
                 >
                   {i + 1}
                 </button>
@@ -69,7 +78,7 @@ export function Habit() {
         </div>
       </div>
       <Modal isOpen={isModalOpen} onClose={modalClose}>
-        <>모달~</>
+        <HabitDayModal />
       </Modal>
     </div>
   );
