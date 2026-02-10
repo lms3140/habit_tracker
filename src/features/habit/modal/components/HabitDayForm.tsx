@@ -1,14 +1,15 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { apiUrl } from "../../../../apis/env";
+import { postAuthData } from "../../../../apis/fetch";
+import { useModal } from "../../../../hooks/useModal";
+import { useAuthTokenStore } from "../../../../store/useAuthTokenStore";
 import {
   useHabitDayIndexStore,
   useHabitDayListStore,
 } from "../../store/HabitDayStore";
-import { useAuthTokenStore } from "../../../../store/useAuthTokenStore";
-import { postAuthData } from "../../../../apis/fetch";
-import { apiUrl } from "../../../../apis/env";
-import type { HabitDay } from "../../habitType";
 import { useHabitDayModalStore } from "../../store/HabitModalStore";
-import { useModal } from "../../../../hooks/useModal";
+import { useParams } from "react-router-dom";
 
 type HabitDayForm = {
   habitComment: string;
@@ -24,33 +25,46 @@ export function HabitDayForm({ habitId }: FormProps) {
   const { modalClose } = useModal();
   const { register, handleSubmit } = useForm<HabitDayForm>();
   const { token } = useAuthTokenStore();
+  const { id } = useParams();
 
   // TODO: 에러처리가 필요합니다. 지금은 단순 타입가드입니다.
   if (habitIndex === null) return <></>;
 
   const habitDay = habitDayList[habitIndex];
-
-  const onSubmitHabitDay = async (data: HabitDayForm) => {
-    const postData = {
-      habitId,
-      checked: true,
-      habitIndex: habitDay ? habitDay.habitIndex : habitIndex,
-      habitComment: data.habitComment,
-    };
-
-    try {
-      const data = (await postAuthData({
+  const queryClient = useQueryClient();
+  const saveHabitDayMutation = useMutation({
+    mutationFn: (data: HabitDayForm) => {
+      return postAuthData({
         url: `${apiUrl}/habit-day/save`,
-        data: postData,
-        token,
-      })) as HabitDay;
-      updateHabitDayAt(habitIndex, data);
-    } catch (e) {
-      console.error("등록중 오류가 발생했습니다.");
-    } finally {
+        data: {
+          habitId,
+          checked: true,
+          habitIndex: habitDay ? habitDay.habitIndex : habitIndex,
+          habitComment: data.habitComment,
+        },
+        token: token,
+      });
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["habitDayList", id],
+      });
+    },
+
+    onError: () => {
+      console.error("등록 중 오류가 발생했습니다.");
+    },
+
+    onSettled: () => {
       setForceEdit(false);
       modalClose();
-    }
+    },
+  });
+
+  const onSubmitHabitDay = async (data: HabitDayForm) => {
+    if (habitIndex === null) return;
+    saveHabitDayMutation.mutate(data);
   };
   return (
     <form
