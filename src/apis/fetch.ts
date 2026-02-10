@@ -11,7 +11,9 @@ export const getData = async ({ url }: OnlyUrl) => {
       "Content-Type": "application/json",
     },
   });
-
+  if (response.status === 204) {
+    return null;
+  }
   return await response.json();
 };
 
@@ -25,6 +27,9 @@ export const getAuthData = async ({ url, token }: GetDataParams) => {
   });
   if (response.status === 401) {
     throw new Error("UNAUTHORIZED");
+  }
+  if (response.status === 204) {
+    return null;
   }
   return response.json();
 };
@@ -45,6 +50,9 @@ export const postData = async ({ url, data }: WithOutTokenParams) => {
     },
     body: JSON.stringify(data),
   });
+  if (response.status === 204) {
+    return null;
+  }
   return response.json();
 };
 
@@ -59,6 +67,9 @@ export const postAuthData = async ({ url, data, token }: PostDataParams) => {
   });
   if (response.status === 401) {
     throw new Error("UNAUTHORIZED");
+  }
+  if (response.status === 204) {
+    return null;
   }
   return response.json();
 };

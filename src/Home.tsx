@@ -8,11 +8,14 @@ import { HabitCardSkeleton } from "./features/habit/HabitCardSkeleton";
 import type { IHabitCard } from "./types/globalType";
 import { useNavigate } from "react-router-dom";
 import { useAuthTokenStore } from "./store/useAuthTokenStore";
+import { useModal } from "./hooks/useModal";
+import { HabitModal } from "./features/habit/modal/HabitModal";
 
+//TODO - 값이 없을시 처리
 function Home() {
   const navigate = useNavigate();
   const { token } = useAuthTokenStore();
-  const [isModalOpen, setModalOpen] = useState(false);
+  const { isModalOpen, modalClose, modalOpen } = useModal();
 
   const { isLoading, isError, error, data } = useQuery<IHabitCard[]>({
     queryKey: ["habitList"],
@@ -40,6 +43,14 @@ function Home() {
     <div className="bg-yellow-50">
       <div className="container h-dvh mx-auto">
         <h1 className="text-center text-3xl py-8">Habit Tracker</h1>
+        <div
+          onClick={() => {
+            modalOpen();
+            console.log("h");
+          }}
+        >
+          추가~
+        </div>
         {isLoading ? (
           <HabitCardSkeleton />
         ) : (
@@ -51,16 +62,8 @@ function Home() {
         )}
 
         {/* 모달버튼 부분 */}
-        <div>
-          <button onClick={() => setModalOpen((prev) => !prev)}>하이</button>
-        </div>
-        <Modal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setModalOpen(false);
-          }}
-        >
-          <div>테스트</div>
+        <Modal isOpen={isModalOpen} onClose={modalClose}>
+          <HabitModal onClose={modalClose} />
         </Modal>
       </div>
     </div>

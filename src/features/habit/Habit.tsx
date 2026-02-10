@@ -27,11 +27,10 @@ export function Habit() {
     },
     enabled: Boolean(id) && Boolean(token),
   });
-
   useEffect(() => {
     if (!isSuccess || !data) return;
-    data.forEach((day, i) => {
-      updateHabitDayAt(i, day);
+    data.forEach((day) => {
+      updateHabitDayAt(day.habitIndex, day);
     });
     return () => resetHabitDayList();
   }, [isSuccess, data, updateHabitDayAt]);
@@ -78,7 +77,7 @@ export function Habit() {
         </div>
       </div>
       <Modal isOpen={isModalOpen} onClose={modalClose}>
-        <HabitDayModal />
+        <HabitDayModal onClose={modalClose} />
       </Modal>
     </div>
   );
