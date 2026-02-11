@@ -1,13 +1,14 @@
 import { create } from "zustand";
+import type { IHabitCard } from "../../../types/globalType";
 
-type HabitDayModalState = {
-  forceEdit: boolean;
-  setForceEdit: (v: boolean) => void;
+type HabitModalState = {
+  habitCard: IHabitCard | null;
+  setHabitCard: (card: IHabitCard) => void;
   reset: () => void;
 };
 
-export const useHabitDayModalStore = create<HabitDayModalState>((set) => ({
-  forceEdit: false,
-  setForceEdit: (v) => set({ forceEdit: v }),
-  reset: () => set({ forceEdit: false }),
+export const useHabitModalStore = create<HabitModalState>((set) => ({
+  habitCard: null,
+  setHabitCard: (card) => set({ habitCard: card }),
+  reset: () => set({ habitCard: null }),
 }));

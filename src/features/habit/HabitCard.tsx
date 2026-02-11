@@ -15,11 +15,13 @@ export function HabitCard({ habitCardObj }: HabitCardProps) {
         focus:outline-none focus:ring-2 focus:ring-blue-400
       "
     >
-      <div className="flex items-start justify-between mb-3">
+      <div className="flex flex-col items-start justify-between mb-3">
         <h2 className="text-lg font-semibold text-gray-800">
           {habitCardObj.habitTitle}
         </h2>
-        <span className="text-xs text-gray-400">30일</span>
+        <div>
+          <span className="text-xs text-gray-400">30일</span>
+        </div>
       </div>
 
       <div className="text-sm text-gray-500 mb-4">

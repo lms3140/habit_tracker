@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 import { apiUrl } from "../../../../apis/env";
 import { postAuthData } from "../../../../apis/fetch";
-import { useModal } from "../../../../hooks/useModal";
 import { useAuthTokenStore } from "../../../../store/useAuthTokenStore";
+import { useModalStore } from "../../../../store/useModalStore";
 import {
   useHabitDayIndexStore,
   useHabitDayListStore,
 } from "../../store/HabitDayStore";
-import { useHabitDayModalStore } from "../../store/HabitModalStore";
-import { useParams } from "react-router-dom";
+import { useHabitModalStore } from "../../store/HabitModalStore";
 
 type HabitDayForm = {
   habitComment: string;
@@ -19,10 +19,9 @@ type FormProps = {
   habitId: string;
 };
 export function HabitDayForm({ habitId }: FormProps) {
-  const { habitDayList, updateHabitDayAt } = useHabitDayListStore();
+  const { habitDayList } = useHabitDayListStore();
   const { habitIndex } = useHabitDayIndexStore();
-  const { setForceEdit } = useHabitDayModalStore();
-  const { modalClose } = useModal();
+  const { closeModal, setForceEdit } = useModalStore();
   const { register, handleSubmit } = useForm<HabitDayForm>();
   const { token } = useAuthTokenStore();
   const { id } = useParams();
@@ -58,7 +57,7 @@ export function HabitDayForm({ habitId }: FormProps) {
 
     onSettled: () => {
       setForceEdit(false);
-      modalClose();
+      closeModal();
     },
   });
 
