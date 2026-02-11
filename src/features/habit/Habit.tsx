@@ -4,8 +4,8 @@ import { Navigate, useParams } from "react-router-dom";
 import { apiUrl } from "../../apis/env";
 import { getAuthData } from "../../apis/fetch";
 import { Modal } from "../../components/modal/Modal";
-import { useModal } from "../../hooks/useModal";
 import { useAuthTokenStore } from "../../store/useAuthTokenStore";
+import { useModalStore } from "../../store/useModalStore";
 import type { HabitDay } from "./habitType";
 import { HabitDayModal } from "./modal/HabitDayModal";
 import {
@@ -19,7 +19,8 @@ export function Habit() {
   const { habitDayList, updateHabitDayAt, resetHabitDayList } =
     useHabitDayListStore();
   const { setHabitIndex } = useHabitDayIndexStore();
-  const { isModalOpen, modalClose, modalOpen } = useModal();
+  const { isModalOpen, closeModal, openModal } = useModalStore();
+
   const { isSuccess, isError, data } = useQuery<HabitDay[]>({
     queryKey: ["habitDayList", id],
     queryFn: async () => {
@@ -37,7 +38,7 @@ export function Habit() {
 
   const handleClickDay = (index: number) => {
     setHabitIndex(index);
-    modalOpen();
+    openModal();
   };
 
   if (isError) {
@@ -76,8 +77,8 @@ export function Habit() {
           </div>
         </div>
       </div>
-      <Modal isOpen={isModalOpen} onClose={modalClose}>
-        <HabitDayModal onClose={modalClose} />
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <HabitDayModal />
       </Modal>
     </div>
   );

@@ -11,6 +11,7 @@ export function HabitDayInfo() {
   if (habitIndex === null || !habitDayList[habitIndex]) {
     return <></>;
   }
+
   const habitDay = habitDayList[habitIndex];
   return (
     <div className="w-full space-y-4">

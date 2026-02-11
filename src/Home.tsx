@@ -1,21 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiUrl } from "./apis/env";
-import { getAuthData, getData } from "./apis/fetch";
-import { HabitCard } from "./components/HabitCard/HabitCard";
+import { getAuthData } from "./apis/fetch";
+import { HabitCard } from "./features/habit/HabitCard";
 import { Modal } from "./components/modal/Modal";
 import { HabitCardSkeleton } from "./features/habit/HabitCardSkeleton";
-import type { IHabitCard } from "./types/globalType";
-import { useNavigate } from "react-router-dom";
-import { useAuthTokenStore } from "./store/useAuthTokenStore";
-import { useModal } from "./hooks/useModal";
 import { HabitModal } from "./features/habit/modal/HabitModal";
+import { useAuthTokenStore } from "./store/useAuthTokenStore";
+import { useModalStore } from "./store/useModalStore";
+import type { IHabitCard } from "./types/globalType";
 
 //TODO - 값이 없을시 처리
 function Home() {
   const navigate = useNavigate();
   const { token } = useAuthTokenStore();
-  const { isModalOpen, modalClose, modalOpen } = useModal();
+
+  const { isModalOpen, closeModal, openModal } = useModalStore();
 
   const { isLoading, isError, error, data } = useQuery<IHabitCard[]>({
     queryKey: ["habitList"],
@@ -45,8 +46,7 @@ function Home() {
         <h1 className="text-center text-3xl py-8">Habit Tracker</h1>
         <div
           onClick={() => {
-            modalOpen();
-            console.log("h");
+            openModal();
           }}
         >
           추가~
@@ -62,8 +62,8 @@ function Home() {
         )}
 
         {/* 모달버튼 부분 */}
-        <Modal isOpen={isModalOpen} onClose={modalClose}>
-          <HabitModal onClose={modalClose} />
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <HabitModal onClose={closeModal} />
         </Modal>
       </div>
     </div>

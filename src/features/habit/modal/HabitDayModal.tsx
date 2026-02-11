@@ -8,28 +8,27 @@ import {
   useHabitDayIndexStore,
   useHabitDayListStore,
 } from "../store/HabitDayStore";
-import { useHabitDayModalStore } from "../store/HabitModalStore";
+import { useHabitModalStore } from "../store/HabitModalStore";
 import { HabitDayForm } from "./components/HabitDayForm";
 import { HabitDayInfo } from "./components/HabitDayInfo";
+import { useModalStore } from "../../../store/useModalStore";
 
-export function HabitDayModal({ onClose }: { onClose: () => void }) {
+export function HabitDayModal() {
   const { id } = useParams();
-  const { setForceEdit, forceEdit } = useHabitDayModalStore();
   const { habitIndex } = useHabitDayIndexStore();
   const { habitDayList } = useHabitDayListStore();
   const { token } = useAuthTokenStore();
+  const { closeModal, setForceEdit, forceEdit } = useModalStore();
 
   const { error, success } = useAlert();
 
   useEffect(() => {
-    if (!id || habitIndex === null) {
-      onClose();
-      return;
-    }
-  }, [id, habitIndex]);
+    return () => {
+      closeModal();
+    };
+  }, []);
 
   if (habitIndex === null || !id) {
-    console.log(habitIndex);
     return <div className="w-full"></div>;
   }
 
