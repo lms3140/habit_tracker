@@ -1,18 +1,8 @@
 import dayjs from "dayjs";
-import {
-  useHabitDayIndexStore,
-  useHabitDayListStore,
-} from "../../store/HabitDayStore";
 
-export function HabitDayInfo() {
-  const { habitDayList } = useHabitDayListStore();
-  const { habitIndex } = useHabitDayIndexStore();
+import type { HabitDay } from "../../habitType";
 
-  if (habitIndex === null || !habitDayList[habitIndex]) {
-    return <></>;
-  }
-
-  const habitDay = habitDayList[habitIndex];
+export function HabitDayInfo({ habitDay }: { habitDay: HabitDay }) {
   return (
     <div className="w-full space-y-4">
       <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">

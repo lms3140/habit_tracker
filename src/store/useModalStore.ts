@@ -21,6 +21,7 @@ export const useModalStore = create<ModalState>((set) => ({
   closeModal: () =>
     set({
       isModalOpen: false,
+      forceEdit: false,
     }),
 
   setForceEdit: (v) =>

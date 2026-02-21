@@ -1,15 +1,13 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { apiUrl } from "../../../../apis/env";
-import { postAuthData } from "../../../../apis/fetch";
+import { getAuthData, postAuthData } from "../../../../apis/fetch";
 import { useAuthTokenStore } from "../../../../store/useAuthTokenStore";
 import { useModalStore } from "../../../../store/useModalStore";
-import {
-  useHabitDayIndexStore,
-  useHabitDayListStore,
-} from "../../store/HabitDayStore";
-import { useHabitModalStore } from "../../store/HabitModalStore";
+import { useHabitDayModalStore } from "../../store/HabitDayStore";
+import type { HabitDay } from "../../habitType";
+import { Button } from "../../../../components/button/Button";
 
 type HabitDayForm = {
   habitComment: string;
@@ -19,8 +17,7 @@ type FormProps = {
   habitId: string;
 };
 export function HabitDayForm({ habitId }: FormProps) {
-  const { habitDayList } = useHabitDayListStore();
-  const { habitIndex } = useHabitDayIndexStore();
+  const { habitIndex } = useHabitDayModalStore();
   const { closeModal, setForceEdit } = useModalStore();
   const { register, handleSubmit } = useForm<HabitDayForm>();
   const { token } = useAuthTokenStore();
@@ -29,7 +26,14 @@ export function HabitDayForm({ habitId }: FormProps) {
   // TODO: 에러처리가 필요합니다. 지금은 단순 타입가드입니다.
   if (habitIndex === null) return <></>;
 
-  const habitDay = habitDayList[habitIndex];
+  const { data: habitDays } = useQuery<HabitDay[]>({
+    queryKey: ["habitDayList", id],
+    queryFn: () => getAuthData({ url: `${apiUrl}/habit-day/${id}`, token }),
+    enabled: Boolean(id) && Boolean(token),
+  });
+
+  const habitDay = habitDays?.find((d) => d.habitIndex === habitIndex);
+
   const queryClient = useQueryClient();
   const saveHabitDayMutation = useMutation({
     mutationFn: (data: HabitDayForm) => {
@@ -68,32 +72,29 @@ export function HabitDayForm({ habitId }: FormProps) {
   return (
     <form
       onSubmit={handleSubmit(onSubmitHabitDay)}
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-5"
     >
       <textarea
         {...register("habitComment", { required: true })}
         placeholder="오늘의 기록을 남겨보세요"
         className="
-        w-full min-h-30 resize-none
-        rounded-xl border border-gray-300
-        px-4 py-3 text-sm text-white-800
-        placeholder:text-gray-400
-        focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400
+        w-full min-h-32 resize-none
+        border border-ds-border
+        bg-ds-surface
+        rounded-ds
+        px-4 py-3 text-sm text-ds-ink
+        placeholder:text-ds-ink-muted
+        outline-none
+        focus-visible:ring-2 focus-visible:ring-ds-ring
+        focus-visible:ring-offset-2 focus-visible:ring-offset-ds-surface
+        transition
       "
       />
 
       <div className="flex justify-end">
-        <button
-          type="submit"
-          className="
-          px-5 py-2 rounded-xl text-sm font-medium
-          bg-green-400 text-white
-          hover:bg-green-500
-          transition
-        "
-        >
+        <Button type="submit" variant="primary">
           {habitDay ? "수정" : "등록"}
-        </button>
+        </Button>
       </div>
     </form>
   );

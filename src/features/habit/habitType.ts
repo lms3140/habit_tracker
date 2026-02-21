@@ -4,6 +4,7 @@ export interface HabitDay {
   habitComment: string;
   updatedAt: string;
   createdAt: string;
+  deletedAt?: string;
   checked: boolean;
 }
 

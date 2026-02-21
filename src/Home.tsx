@@ -3,8 +3,10 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "./apis/env";
 import { getAuthData } from "./apis/fetch";
-import { HabitCard } from "./features/habit/HabitCard";
+import { Container } from "./components/container/Container";
 import { Modal } from "./components/modal/Modal";
+import { EmptyHabitCard } from "./features/habit/EmtpyHabitCard";
+import { HabitCard } from "./features/habit/HabitCard";
 import { HabitCardSkeleton } from "./features/habit/HabitCardSkeleton";
 import { HabitModal } from "./features/habit/modal/HabitModal";
 import { useAuthTokenStore } from "./store/useAuthTokenStore";
@@ -41,31 +43,30 @@ function Home() {
   }, [isError, error?.message]);
 
   return (
-    <div className="bg-yellow-50">
-      <div className="container h-dvh mx-auto">
+    <div className="bg-ds-bg h-lvh">
+      <Container>
         <h1 className="text-center text-3xl py-8">Habit Tracker</h1>
-        <div
-          onClick={() => {
-            openModal();
-          }}
-        >
-          추가~
-        </div>
+
         {isLoading ? (
           <HabitCardSkeleton />
         ) : (
-          <div>
+          <div className="grid grid-cols-3">
             {data?.map((v) => (
               <HabitCard habitCardObj={v} key={v.habitId} />
             ))}
+            <EmptyHabitCard
+              onClick={() => {
+                openModal();
+              }}
+            />
           </div>
         )}
 
         {/* 모달버튼 부분 */}
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <HabitModal onClose={closeModal} />
+          <HabitModal />
         </Modal>
-      </div>
+      </Container>
     </div>
   );
 }

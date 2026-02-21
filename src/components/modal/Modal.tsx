@@ -32,12 +32,14 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
 
   return createPortal(
     <div
+      aria-modal
+      role="dialog"
       className="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
-      onClick={onClose}
+      onPointerDown={onClose}
     >
       <div
-        className="bg-white dark:text-white dark:bg-zinc-900 rounded-2xl shadow-xl max-w-lg w-full p-6 z-50"
-        onClick={(e) => e.stopPropagation()}
+        className="bg-ds-bg border-ds-border rounded-2xl shadow-xl max-w-lg w-full p-6 z-50"
+        onPointerDown={(e) => e.stopPropagation()}
       >
         {children}
       </div>
