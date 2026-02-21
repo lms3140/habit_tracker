@@ -24,8 +24,8 @@ export function HabitAddForm() {
         data,
         token,
       }),
-    onSuccess: (result) => {
-      success("성공!" + result.habitId);
+    onSuccess: () => {
+      success("성공!");
 
       queryClient.invalidateQueries({
         queryKey: ["habitList"],
@@ -42,12 +42,56 @@ export function HabitAddForm() {
   };
 
   return (
-    <div className="w-full">
-      <h1>습관 추가하기!</h1>
-      <form onSubmit={handleSubmit(onSubmitHabit)}>
-        <input type="text" {...register("habitTitle", { required: true })} />
-        <button type="submit">등록</button>
-      </form>
+    <div className="w-full max-w-md mx-auto">
+      <div
+        className="
+        bg-ds-surface
+        border border-ds-border
+        rounded-ds-lg
+        shadow-ds
+        px-6 py-7
+      "
+      >
+        <h1 className="text-lg font-semibold text-ds-ink">습관 추가</h1>
+
+        <form
+          onSubmit={handleSubmit(onSubmitHabit)}
+          className="mt-6 flex flex-col gap-5"
+        >
+          <input
+            type="text"
+            placeholder="무엇을 꾸준히 해볼까요?"
+            autoComplete="off"
+            {...register("habitTitle", { required: true })}
+            className="
+            w-full
+            bg-transparent
+            border-b border-ds-border
+            pb-3
+            text-base text-ds-ink
+            placeholder:text-ds-ink-muted
+            outline-none
+            focus:border-ds-primary
+            transition-colors
+          "
+          />
+
+          <button
+            type="submit"
+            className="
+            self-end
+            rounded-ds-pill
+            bg-ds-primary
+            px-5 py-2.5
+            text-sm font-medium text-ds-ink
+            hover:bg-ds-primary-hover
+            transition
+          "
+          >
+            등록
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
