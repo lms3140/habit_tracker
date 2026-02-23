@@ -1,6 +1,6 @@
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { apiUrl } from "../../apis/env";
 import { getAuthData } from "../../apis/fetch";
 import { Modal } from "../../components/modal/Modal";
@@ -9,15 +9,14 @@ import { useModalStore } from "../../store/useModalStore";
 import type { HabitDay } from "./habitType";
 import { HabitDayModal } from "./modal/HabitDayModal";
 import { useHabitDayModalStore } from "./store/HabitDayStore";
-import type { HabitCardProps } from "./HabitCard";
 import type { IHabitCard } from "../../types/globalType";
 
 export function Habit() {
   const { id } = useParams();
-  const { token } = useAuthTokenStore();
+  const { token, clearToken } = useAuthTokenStore();
   const { setHabitIndex } = useHabitDayModalStore();
   const { isModalOpen, closeModal, openModal } = useModalStore();
-
+  const navigate = useNavigate();
   const { data } = useQuery<HabitDay[]>({
     queryKey: ["habitDayList", id],
     queryFn: async () => {
@@ -26,12 +25,21 @@ export function Habit() {
     enabled: Boolean(id) && Boolean(token),
   });
 
-  const { data: habitData } = useQuery<IHabitCard>({
+  const { data: habitData, error } = useQuery<IHabitCard>({
     queryKey: ["habit", id],
     queryFn: async () =>
       getAuthData({ url: `${apiUrl}/habit/get-one?habitId=${id}`, token }),
     enabled: Boolean(id) && Boolean(token),
   });
+
+  useEffect(() => {
+    if (error) {
+      if (error.message === "UNAUTHORIZED") {
+        clearToken();
+        navigate("/login", { replace: true });
+      }
+    }
+  }, [error?.message]);
 
   const days = useMemo(() => {
     const base = Array.from({ length: 30 }, () => null as HabitDay | null);

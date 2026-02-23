@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Button } from "../../../components/button/Button";
 import { useAlert } from "../../../hooks/useAlert";
 import { useAuthTokenStore } from "../../../store/useAuthTokenStore";
 import { useModalStore } from "../../../store/useModalStore";
@@ -9,7 +9,6 @@ import { useGetHabitList } from "../hook/useHabitList";
 import { useHabitDayModalStore } from "../store/HabitDayStore";
 import { HabitDayForm } from "./components/HabitDayForm";
 import { HabitDayInfo } from "./components/HabitDayInfo";
-import { Button } from "../../../components/button/Button";
 
 export function HabitDayModal() {
   const { id } = useParams();
