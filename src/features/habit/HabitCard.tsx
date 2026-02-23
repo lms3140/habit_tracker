@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import type { IHabitCard } from "../../types/globalType";
 import { HabitCardMenu } from "./modal/components/HabitCardMenu";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 
 export type HabitCardProps = {
   habitCardObj: IHabitCard;
