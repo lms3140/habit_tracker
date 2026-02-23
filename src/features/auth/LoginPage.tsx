@@ -1,11 +1,11 @@
-import { useState, type FormEvent, type ReactElement } from "react";
+import { useEffect, useState, type FormEvent, type ReactElement } from "react";
 import { postData } from "../../apis/fetch";
 import { apiUrl } from "../../apis/env";
 import { useNavigate } from "react-router-dom";
 import { useAuthTokenStore } from "../../store/useAuthTokenStore";
 
 export function LoginPage() {
-  const { setToken } = useAuthTokenStore();
+  const { setToken, token } = useAuthTokenStore();
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
   const navigate = useNavigate();
@@ -22,6 +22,12 @@ export function LoginPage() {
     setToken(token);
     navigate("/");
   };
+
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-ds-bg p-6">
