@@ -2,6 +2,9 @@ export interface HabitDay {
   habitDayId: number;
   habitIndex: number;
   habitComment: string;
+  habitPlace: string;
+  habitDifficulty: string;
+  habitCondition: string;
   updatedAt: string;
   createdAt: string;
   deletedAt?: string;

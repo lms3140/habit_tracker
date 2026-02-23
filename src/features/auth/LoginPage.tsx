@@ -24,14 +24,14 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen flex items-center justify-center bg-ds-bg p-6">
       <form
         onSubmit={handleLogin}
-        className="w-full max-w-sm bg-white rounded-lg shadow-lg p-8 space-y-6"
+        className="w-full max-w-sm bg-ds-surface rounded-ds-lg shadow-ds p-8 space-y-6 border border-ds-border"
       >
         <div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">로그인</h2>
-          <p className="text-gray-600 text-sm">계정에 로그인하세요</p>
+          <h2 className="text-2xl font-bold text-ds-ink mb-2">로그인</h2>
+          <p className="text-ds-ink-muted text-sm">계정에 로그인하세요</p>
         </div>
 
         <input
@@ -40,13 +40,13 @@ export function LoginPage() {
           onChange={(e) => setId(e.currentTarget.value)}
           placeholder="아이디"
           className="
-      w-full px-4 py-3
-      border border-gray-300 rounded-lg
-      text-sm
-      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-      placeholder-gray-400
-      transition-all
-    "
+          w-full px-4 py-3
+          border border-ds-border rounded-ds
+          bg-ds-surface
+          text-sm text-ds-ink placeholder:text-ds-ink-muted/70
+          focus:outline-none focus:ring-2 focus:ring-ds-ring focus:border-transparent
+          transition-all
+        "
         />
 
         <input
@@ -55,35 +55,29 @@ export function LoginPage() {
           onChange={(e) => setPw(e.currentTarget.value)}
           placeholder="비밀번호"
           className="
-      w-full px-4 py-3
-      border border-gray-300 rounded-lg
-      text-sm
-      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-      placeholder-gray-400
-      transition-all
-    "
+          w-full px-4 py-3
+          border border-ds-border rounded-ds
+          bg-ds-surface
+          text-sm text-ds-ink placeholder:text-ds-ink-muted/70
+          focus:outline-none focus:ring-2 focus:ring-ds-ring focus:border-transparent
+          transition-all
+        "
         />
 
         <button
           type="submit"
           className="
-      w-full px-4 py-3
-      bg-blue-500 hover:bg-blue-600
-      text-white font-semibold
-      rounded-lg
-      transition-all
-      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-      active:scale-95
-    "
+          w-full px-4 py-3
+          bg-ds-primary hover:bg-ds-primary-hover
+          text-ds-ink font-semibold
+          rounded-ds
+          transition-all
+          focus:outline-none focus:ring-2 focus:ring-ds-ring focus:ring-offset-2 focus:ring-offset-ds-bg
+          active:scale-95
+        "
         >
           로그인
         </button>
-
-        <div className="text-center">
-          <a href="#" className="text-blue-500 hover:text-blue-600 text-sm">
-            비밀번호를 잊으셨나요?
-          </a>
-        </div>
       </form>
     </div>
   );

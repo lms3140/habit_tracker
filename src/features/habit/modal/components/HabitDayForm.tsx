@@ -8,14 +8,40 @@ import { useModalStore } from "../../../../store/useModalStore";
 import { useHabitDayModalStore } from "../../store/HabitDayStore";
 import type { HabitDay } from "../../habitType";
 import { Button } from "../../../../components/button/Button";
+import { SegmentedRadioGroup } from "../../../../components/input/Radio";
+import { SelectField } from "../../../../components/input/Select";
 
 type HabitDayForm = {
   habitComment: string;
+  habitDifficulty: string;
+  habitCondition: string;
+  habitPlace: string;
 };
 
 type FormProps = {
   habitId: string;
 };
+
+const DIFFICULTY_OPTIONS = [
+  { label: "쉬움", value: "EASY" },
+  { label: "보통", value: "NORMAL" },
+  { label: "어려움", value: "HARD" },
+] as const;
+
+const CONDITION_OPTIONS = [
+  { label: "좋음", value: "GOOD" },
+  { label: "보통", value: "OK" },
+  { label: "별로", value: "BAD" },
+] as const;
+
+const PLACE_OPTIONS = [
+  { label: "집", value: "HOME" },
+  { label: "회사/학교", value: "WORK" },
+  { label: "밖", value: "OUT" },
+  { label: "헬스장/특정", value: "GYM" },
+  { label: "기타", value: "ETC" },
+] as const;
+
 export function HabitDayForm({ habitId }: FormProps) {
   const { habitIndex } = useHabitDayModalStore();
   const { closeModal, setForceEdit } = useModalStore();
@@ -38,14 +64,18 @@ export function HabitDayForm({ habitId }: FormProps) {
   const saveHabitDayMutation = useMutation({
     mutationFn: (data: HabitDayForm) => {
       return postAuthData({
-        url: `${apiUrl}/habit-day/save`,
+        url: `${apiUrl}/habit-day/update`,
         data: {
           habitId,
           checked: true,
           habitIndex: habitDay ? habitDay.habitIndex : habitIndex,
+          habitDayId: habitDay ? habitDay.habitDayId : null,
           habitComment: data.habitComment,
+          habitPlace: data.habitPlace,
+          habitDifficulty: data.habitDifficulty,
+          habitCondition: data.habitCondition,
         },
-        token: token,
+        token,
       });
     },
 
@@ -74,6 +104,29 @@ export function HabitDayForm({ habitId }: FormProps) {
       onSubmit={handleSubmit(onSubmitHabitDay)}
       className="flex flex-col gap-5"
     >
+      <SegmentedRadioGroup
+        register={register}
+        name={"habitDifficulty"}
+        options={DIFFICULTY_OPTIONS}
+        title="난이도"
+        required={true}
+      />
+      <SegmentedRadioGroup
+        register={register}
+        name={"habitCondition"}
+        options={CONDITION_OPTIONS}
+        title="컨디션"
+        required={true}
+      />
+      <SelectField
+        register={register}
+        name={"habitPlace"}
+        options={PLACE_OPTIONS}
+        title="장소"
+        required={true}
+      />
+
+      <label>메모</label>
       <textarea
         {...register("habitComment", { required: true })}
         placeholder="오늘의 기록을 남겨보세요"
