@@ -6,16 +6,22 @@ import { getAuthData, postAuthData } from "../../../../apis/fetch";
 import { useAuthTokenStore } from "../../../../store/useAuthTokenStore";
 import { useModalStore } from "../../../../store/useModalStore";
 import { useHabitDayModalStore } from "../../store/HabitDayStore";
-import type { HabitDay } from "../../habitType";
+import type {
+  HabitCondition,
+  HabitDay,
+  HabitDifficulty,
+  HabitPlace,
+} from "../../habitType";
 import { Button } from "../../../../components/button/Button";
 import { SegmentedRadioGroup } from "../../../../components/input/Radio";
 import { SelectField } from "../../../../components/input/Select";
 
 type HabitDayForm = {
   habitComment: string;
-  habitDifficulty: string;
-  habitCondition: string;
-  habitPlace: string;
+  habitDifficulty: HabitDifficulty;
+  habitCondition: HabitCondition;
+  habitPlace: HabitPlace;
+  success: boolean;
 };
 
 type FormProps = {
@@ -30,7 +36,7 @@ const DIFFICULTY_OPTIONS = [
 
 const CONDITION_OPTIONS = [
   { label: "좋음", value: "GOOD" },
-  { label: "보통", value: "OK" },
+  { label: "보통", value: "NORMAL" },
   { label: "별로", value: "BAD" },
 ] as const;
 
@@ -41,6 +47,11 @@ const PLACE_OPTIONS = [
   { label: "헬스장/특정", value: "GYM" },
   { label: "기타", value: "ETC" },
 ] as const;
+
+const SUCCESS_OPTION = [
+  { label: "성공", value: "SUCCESS" },
+  { label: "실패", value: "FAILED" },
+];
 
 export function HabitDayForm({ habitId }: FormProps) {
   const { habitIndex } = useHabitDayModalStore();
@@ -64,16 +75,17 @@ export function HabitDayForm({ habitId }: FormProps) {
   const saveHabitDayMutation = useMutation({
     mutationFn: (data: HabitDayForm) => {
       return postAuthData({
-        url: `${apiUrl}/habit-day/update`,
+        url: `${apiUrl}/habit-day/save`,
         data: {
           habitId,
-          checked: true,
+          success: true,
           habitIndex: habitDay ? habitDay.habitIndex : habitIndex,
           habitDayId: habitDay ? habitDay.habitDayId : null,
           habitComment: data.habitComment,
           habitPlace: data.habitPlace,
           habitDifficulty: data.habitDifficulty,
           habitCondition: data.habitCondition,
+          completed: data.success,
         },
         token,
       });
@@ -104,6 +116,12 @@ export function HabitDayForm({ habitId }: FormProps) {
       onSubmit={handleSubmit(onSubmitHabitDay)}
       className="flex flex-col gap-5"
     >
+      <SegmentedRadioGroup
+        register={register}
+        name={"success"}
+        title="성공여부"
+        options={SUCCESS_OPTION}
+      />
       <SegmentedRadioGroup
         register={register}
         name={"habitDifficulty"}

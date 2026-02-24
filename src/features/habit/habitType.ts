@@ -1,14 +1,19 @@
+export type HabitPlace = "HOME" | "WORK" | "OUT" | "GYM" | "ETC";
+export type HabitDifficulty = "EASY" | "NORMAL" | "HARD";
+export type HabitCondition = "GOOD" | "NORMAL" | "BAD";
+export type HabitCompleted = "SUCCESS" | "FAILED";
+
 export interface HabitDay {
   habitDayId: number;
   habitIndex: number;
   habitComment: string;
-  habitPlace: string;
-  habitDifficulty: string;
-  habitCondition: string;
+  habitPlace: HabitPlace;
+  habitDifficulty: HabitDifficulty;
+  habitCondition: HabitCondition;
   updatedAt: string;
   createdAt: string;
   deletedAt?: string;
-  checked: boolean;
+  completed: HabitCompleted;
 }
 
 export interface HabitDayPayload {

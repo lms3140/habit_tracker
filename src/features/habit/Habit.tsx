@@ -6,16 +6,26 @@ import { getAuthData } from "../../apis/fetch";
 import { Modal } from "../../components/modal/Modal";
 import { useAuthTokenStore } from "../../store/useAuthTokenStore";
 import { useModalStore } from "../../store/useModalStore";
-import type { HabitDay } from "./habitType";
+import type { HabitCompleted, HabitDay } from "./habitType";
 import { HabitDayModal } from "./modal/HabitDayModal";
 import { useHabitDayModalStore } from "./store/HabitDayStore";
 import type { IHabitCard } from "../../types/globalType";
+import { useHabitDayCsvExport } from "../../hooks/useHabitDayCsvExport";
+import { HabitPieChart } from "./HabitPieChart";
+
+const stateMap: Record<HabitCompleted | "EMPTY", string> = {
+  SUCCESS:
+    "bg-ds-primary border-transparent text-ds-ink hover:bg-ds-primary-hover",
+  FAILED: "bg-ds-danger border-ds-border text-ds-ink hover:bg-ds-danger-hover",
+  EMPTY: "bg-ds-bg border-ds-border text-ds-ink hover:bg-ds-accent",
+};
 
 export function Habit() {
   const { id } = useParams();
   const { token, clearToken } = useAuthTokenStore();
   const { setHabitIndex } = useHabitDayModalStore();
   const { isModalOpen, closeModal, openModal } = useModalStore();
+  const { exportCsv } = useHabitDayCsvExport();
   const navigate = useNavigate();
   const { data } = useQuery<HabitDay[]>({
     queryKey: ["habitDayList", id],
@@ -55,7 +65,7 @@ export function Habit() {
   };
 
   return (
-    <div className="h-dvh pt-10 bg-ds-bg">
+    <div className="min-h-dvh max-h-fit pt-10 pb-10 bg-ds-bg">
       <div className="w-full max-w-4xl mx-auto">
         <div
           className="
@@ -71,15 +81,25 @@ export function Habit() {
             <div className="text-lg font-semibold text-ds-ink">
               {habitData?.habitTitle}
             </div>
-            <div className="text-sm text-ds-ink-muted">30일</div>
+            <div className="text-sm text-ds-ink-muted">
+              <span>30일</span>
+              <span>
+                <button
+                  onClick={() => {
+                    if (!data) return;
+                    exportCsv(data, "list.csv");
+                  }}
+                >
+                  export
+                </button>
+              </span>
+            </div>
           </div>
 
           {/* Grid */}
           <div className="mt-7 flex justify-center">
             <div className="grid grid-cols-5 gap-4">
               {days.map((habitDay, i) => {
-                const isChecked = !!habitDay?.checked;
-
                 return (
                   <button
                     key={i}
@@ -94,11 +114,7 @@ export function Habit() {
                     transition
                     active:scale-[0.98]
                     outline-none focus-visible:ring-2 focus-visible:ring-ds-ring focus-visible:ring-offset-2
-                    ${
-                      isChecked
-                        ? "bg-ds-primary border-transparent text-ds-ink hover:bg-ds-primary-hover"
-                        : "bg-ds-bg border-ds-border text-ds-ink hover:bg-ds-accent"
-                    }
+                    ${stateMap[habitDay?.completed ?? "EMPTY"]}
                   `}
                   >
                     {i + 1}
@@ -108,7 +124,21 @@ export function Habit() {
             </div>
           </div>
         </div>
+        <div
+          className="
+          bg-ds-surface
+          border border-ds-border
+          rounded-ds-lg
+          shadow-ds
+          px-6 py-7
+        "
+        >
+          <h3 className="text-sm font-semibold text-ds-ink mb-2">
+            성공/실패 비율
+          </h3>
 
+          <HabitPieChart habitList={data} />
+        </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           <HabitDayModal />
         </Modal>
