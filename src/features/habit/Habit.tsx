@@ -1,6 +1,6 @@
-import { QueryClient, useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { apiUrl } from "../../apis/env";
 import { getAuthData } from "../../apis/fetch";
 import { Modal } from "../../components/modal/Modal";
@@ -12,6 +12,7 @@ import { useHabitDayModalStore } from "./store/HabitDayStore";
 import type { IHabitCard } from "../../types/globalType";
 import { useHabitDayCsvExport } from "../../hooks/useHabitDayCsvExport";
 import { HabitPieChart } from "./HabitPieChart";
+import { BackButton } from "../../components/button/BackButton";
 
 const stateMap: Record<HabitCompleted | "EMPTY", string> = {
   SUCCESS:
@@ -44,12 +45,13 @@ export function Habit() {
 
   useEffect(() => {
     if (error) {
+      console.log(error.message);
       if (error.message === "UNAUTHORIZED") {
         clearToken();
         navigate("/login", { replace: true });
       }
     }
-  }, [error?.message]);
+  }, [error, error?.message]);
 
   const days = useMemo(() => {
     const base = Array.from({ length: 30 }, () => null as HabitDay | null);
@@ -65,8 +67,9 @@ export function Habit() {
   };
 
   return (
-    <div className="min-h-dvh max-h-fit pt-10 pb-10 bg-ds-bg">
+    <div className="">
       <div className="w-full max-w-4xl mx-auto">
+        <BackButton onClick={() => navigate("/habit")}>{"<<"}</BackButton>
         <div
           className="
           bg-ds-surface

@@ -1,5 +1,4 @@
 import {
-  Legend,
   Pie,
   PieChart,
   Sector,

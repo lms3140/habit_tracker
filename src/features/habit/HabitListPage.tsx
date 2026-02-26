@@ -12,6 +12,7 @@ import { HabitCard } from "./HabitCard";
 import { EmptyHabitCard } from "./EmtpyHabitCard";
 import { Modal } from "../../components/modal/Modal";
 import { HabitModal } from "./modal/HabitModal";
+import { BackButton } from "../../components/button/BackButton";
 
 //TODO - 값이 없을시 처리
 export function HabitListPage() {
@@ -44,7 +45,10 @@ export function HabitListPage() {
   }, [isError, error?.message]);
 
   return (
-    <div className="bg-ds-bg h-lvh">
+    <div className="">
+      <div className="max-w-4xl mx-auto">
+        <BackButton onClick={() => navigate("/")}>{"<<"}</BackButton>
+      </div>
       <Container>
         <h1 className="text-center text-3xl py-8">Habit Tracker</h1>
 
