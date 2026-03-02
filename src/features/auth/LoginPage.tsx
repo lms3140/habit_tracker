@@ -1,11 +1,11 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { postData, ApiError } from "../../apis/fetch";
 import { apiUrl } from "../../apis/env";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthTokenStore } from "../../store/useAuthTokenStore";
 
 export function LoginPage() {
-  const { setToken, token } = useAuthTokenStore();
+  const { setToken } = useAuthTokenStore();
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
   const navigate = useNavigate();
@@ -33,12 +33,6 @@ export function LoginPage() {
       }
     }
   };
-
-  useEffect(() => {
-    if (token) {
-      navigate("/");
-    }
-  }, []);
 
   const reason = new URLSearchParams(location.search).get("reason");
   const isExpired = reason === "expired";

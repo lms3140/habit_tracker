@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthTokenStore } from "../../store/useAuthTokenStore";
 import { useModalStore } from "../../store/useModalStore";
@@ -18,7 +17,7 @@ import { ErrorStateComponent } from "../../components/ErrorState/ErrorStateCompo
 //TODO - 값이 없을시 처리
 export function HabitListPage() {
   const navigate = useNavigate();
-  const { token, clearToken } = useAuthTokenStore();
+  const { token } = useAuthTokenStore();
 
   const { isModalOpen, closeModal, openModal } = useModalStore();
 
@@ -34,14 +33,6 @@ export function HabitListPage() {
     },
     enabled: Boolean(token),
   });
-
-  useEffect(() => {
-    if (isError && error instanceof ApiError && error.code === "UNAUTHORIZED") {
-      clearToken();
-      navigate("/login?reason=expired", { replace: true });
-      return;
-    }
-  }, [token, isError, error, navigate, clearToken]);
 
   return (
     <div className="">

@@ -93,9 +93,10 @@ export function HabitDayForm({ habitId }: FormProps) {
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["habitDayList", id],
-      });
+      const habitId = Number(id);
+      if (Number.isInteger(habitId) && habitId > 0) {
+        queryClient.invalidateQueries({ queryKey: ["habitDayList", habitId] });
+      }
     },
 
     onError: () => {
