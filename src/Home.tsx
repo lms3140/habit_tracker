@@ -1,10 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuthTokenStore } from "./store/useAuthTokenStore";
 
 //TODO - 값이 없을시 처리
 function Home() {
-  const navigate = useNavigate();
-  const { token, clearToken } = useAuthTokenStore();
+  const { token } = useAuthTokenStore();
 
   return (
     <div className="min-h-lvh bg-ds-bg flex items-center justify-center p-6">

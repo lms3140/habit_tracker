@@ -1,8 +1,13 @@
 import dayjs from "dayjs";
 
-import type { HabitDay } from "../../habitType";
+import type {
+  HabitCondition,
+  HabitDay,
+  HabitDifficulty,
+  HabitPlace,
+} from "../../habitType";
 
-const PLACE_LABEL: Record<string, string> = {
+const PLACE_LABEL: Record<HabitPlace, string> = {
   HOME: "집",
   WORK: "회사/학교",
   OUT: "밖",
@@ -10,15 +15,15 @@ const PLACE_LABEL: Record<string, string> = {
   ETC: "기타",
 };
 
-const DIFFICULTY_LABEL: Record<string, string> = {
+const DIFFICULTY_LABEL: Record<HabitDifficulty, string> = {
   EASY: "쉬움",
   NORMAL: "보통",
   HARD: "어려움",
 };
 
-const CONDITION_LABEL: Record<string, string> = {
+const CONDITION_LABEL: Record<HabitCondition, string> = {
   GOOD: "좋음",
-  OK: "보통",
+  NORMAL: "보통",
   BAD: "별로",
 };
 

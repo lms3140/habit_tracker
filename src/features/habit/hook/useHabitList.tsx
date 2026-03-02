@@ -8,9 +8,12 @@ type GetHabitListParams = {
   token: string;
 };
 export const useGetHabitList = ({ id, token }: GetHabitListParams) => {
-  return useQuery<HabitDay[]>({
+  return useQuery<HabitDay[] | null>({
     queryKey: ["habitDayList", id],
-    queryFn: () => getAuthData({ url: `${apiUrl}/habit-day/${id}`, token }),
+    // getAuthData<T> now returns Promise<T | null>, so the query result type
+    // must allow null.  callers already guard with optional chaining.
+    queryFn: () =>
+      getAuthData<HabitDay[]>({ url: `${apiUrl}/habit-day/${id}`, token }),
     enabled: Boolean(id) && Boolean(token),
   });
 };

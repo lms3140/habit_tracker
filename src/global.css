@@ -9,6 +9,11 @@
      Colors
   ===================================================== */
 
+  /* Failed / Danger */
+  --color-ds-danger: #f07a7a;
+  --color-ds-danger-hover: #e96a6a;
+  --color-ds-danger-soft: rgba(240, 122, 122, 0.18);
+
   /* --- Text --- */
   /* 기본 텍스트 (강한 대비, 가독성 중심) */
   --color-ds-ink: #0e1c36;
