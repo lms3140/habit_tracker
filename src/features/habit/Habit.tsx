@@ -82,12 +82,12 @@ export function Habit() {
   }, [data]);
 
   const handleClickDay = (index: number) => {
-    if (isLoading) return; // ✅ 로딩 중 클릭 방지
+    if (isLoading) return;
     setHabitIndex(index);
     openModal();
   };
 
-  // ✅ habitData 쿼리 에러도 최소 처리 (정책: 404면 NotFound, 403이면 권한)
+  // habitDetail 에러 처리
   if (isHabitError && habitError instanceof ApiError) {
     if (habitError.status === 404) return <NotFoundPage />;
 
@@ -102,7 +102,7 @@ export function Habit() {
     }
   }
 
-  // ✅ dayList 쿼리 에러 처리 (기존 로직 유지 + 로딩/복구 UX)
+  // dayList 에러처리
   if (isError && error instanceof ApiError) {
     if (error.status === 404) return <NotFoundPage />;
 
@@ -172,7 +172,7 @@ export function Habit() {
             </div>
           </div>
 
-          {/* Empty 안내(선택이지만 Top1에서 효과 큼) */}
+          {/* Empty 안내*/}
           {!isLoading && (data?.length ?? 0) === 0 && (
             <div className="mt-4 rounded-ds border border-ds-border bg-ds-bg p-3 text-sm text-ds-ink">
               아직 기록이 없습니다.
@@ -213,7 +213,7 @@ export function Habit() {
             성공/실패 비율
           </h3>
 
-          {/* 로딩 중에도 차트는 null/빈 데이터로 그려질 수 있으니, 최소 방어 */}
+          {/* 차트 null 방어*/}
           <HabitPieChart habitList={data ?? null} />
         </div>
 

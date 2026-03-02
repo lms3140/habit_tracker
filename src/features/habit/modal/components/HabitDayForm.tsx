@@ -57,13 +57,13 @@ const SUCCESS_OPTION = [
 
 export function HabitDayForm({ habitId }: FormProps) {
   const { habitIndex } = useHabitDayModalStore();
-  const { closeModal, setForceEdit } = useModalStore();
+  const { closeModal } = useModalStore();
   const { register, handleSubmit } = useForm<HabitDayForm>();
   const { token } = useAuthTokenStore();
   const { id } = useParams();
   const parsedHabitId = parseHabitId(id);
   const { success, error } = useAlert();
-  // TODO: 에러처리가 필요합니다. 지금은 단순 타입가드입니다.
+
   if (habitIndex === null) return <></>;
 
   const { data: habitDays } = useQuery<HabitDay[] | null>({
@@ -98,19 +98,16 @@ export function HabitDayForm({ habitId }: FormProps) {
     },
 
     onSuccess: () => {
-      // ✅ 여기서만 invalidate + 모달 닫기
       const hid = Number(id);
       if (Number.isInteger(hid) && hid > 0) {
-        queryClient.invalidateQueries({ queryKey: ["habitDayList", hid] }); // (이미 통일하셨다면 통일된 키 함수로)
-        // queryClient.invalidateQueries({ queryKey: habitQueryKeys.habitDayList(hid) });
+        queryClient.invalidateQueries({ queryKey: ["habitDayList", hid] });
       }
 
       success(habitDay ? "수정했습니다." : "등록했습니다.");
-      closeModal(); // ✅ 성공일 때만 닫기
+      closeModal();
     },
 
     onError: (e) => {
-      // ✅ 실패면 모달 유지 + 메시지만
       if (e instanceof ApiError) {
         if (e.code === "UNAUTHORIZED") return error("세션이 만료되었습니다.");
         if (e.status === 403) return error("권한이 없습니다.");

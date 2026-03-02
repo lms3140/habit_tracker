@@ -12,10 +12,8 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error) => {
-        // 401은 재시도 의미가 없으니 끄기
         if (error instanceof ApiError && error.code === "UNAUTHORIZED")
           return false;
-        // MVP: 나머지는 1회만 재시도(원하시면 0으로)
         return failureCount < 1;
       },
     },
@@ -25,7 +23,7 @@ const queryClient = new QueryClient({
   },
 });
 
-// ✅ 전역 401 처리: 토큰 비우고, "만료" 플래그만 남김
+// 401 전역처리
 queryClient.getQueryCache().subscribe((event) => {
   const err = event?.query?.state?.error;
   if (err instanceof ApiError && err.code === "UNAUTHORIZED") {
@@ -34,6 +32,7 @@ queryClient.getQueryCache().subscribe((event) => {
   }
 });
 
+// 401 뮤테이션 처리
 queryClient.getMutationCache().subscribe((event) => {
   const err = event?.mutation?.state?.error;
   if (err instanceof ApiError && err.code === "UNAUTHORIZED") {
