@@ -52,7 +52,7 @@ const MyCustomPie = (props: PieSectorShapeProps) => {
 export function HabitPieChart({
   habitList,
 }: {
-  habitList: HabitDay[] | undefined;
+  habitList: HabitDay[] | undefined | null;
 }) {
   if (!habitList) {
     return;

@@ -63,9 +63,10 @@ export function HabitDayForm({ habitId }: FormProps) {
   // TODO: 에러처리가 필요합니다. 지금은 단순 타입가드입니다.
   if (habitIndex === null) return <></>;
 
-  const { data: habitDays } = useQuery<HabitDay[]>({
+  const { data: habitDays } = useQuery<HabitDay[] | null>({
     queryKey: ["habitDayList", id],
-    queryFn: () => getAuthData({ url: `${apiUrl}/habit-day/${id}`, token }),
+    queryFn: () =>
+      getAuthData<HabitDay[]>({ url: `${apiUrl}/habit-day/${id}`, token }),
     enabled: Boolean(id) && Boolean(token),
   });
 

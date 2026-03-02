@@ -1,7 +1,7 @@
-import { useEffect, useState, type FormEvent, type ReactElement } from "react";
-import { postData } from "../../apis/fetch";
+import { useEffect, useState, type FormEvent } from "react";
+import { postData, ApiError } from "../../apis/fetch";
 import { apiUrl } from "../../apis/env";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthTokenStore } from "../../store/useAuthTokenStore";
 
 export function LoginPage() {
@@ -9,18 +9,29 @@ export function LoginPage() {
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const resp = await postData({
-      url: `${apiUrl}/user/login`,
-      data: {
-        userId: id,
-        password: pw,
-      },
-    });
-    const token = await resp.token;
-    setToken(token);
-    navigate("/");
+    try {
+      const resp = await postData<{ token: string }>({
+        url: `${apiUrl}/user/login`,
+        data: {
+          userId: id,
+          password: pw,
+        },
+      });
+      if (!resp) throw new Error("서버 응답이 없습니다.");
+      const token = resp.token;
+      setToken(token);
+      navigate("/");
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        console.error(err);
+      }
+    }
   };
 
   useEffect(() => {
@@ -28,6 +39,9 @@ export function LoginPage() {
       navigate("/");
     }
   }, []);
+
+  const reason = new URLSearchParams(location.search).get("reason");
+  const isExpired = reason === "expired";
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-ds-bg p-6">
@@ -84,6 +98,11 @@ export function LoginPage() {
         >
           로그인
         </button>
+        {isExpired && (
+          <div className="text-ds-ink-muted text-sm text-center">
+            세션이 만료되었습니다. 다시 로그인해주세요.
+          </div>
+        )}
       </form>
     </div>
   );

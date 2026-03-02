@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiUrl } from "../../apis/env";
-import { getAuthData } from "../../apis/fetch";
+import { getAuthData, ApiError } from "../../apis/fetch";
 import { Modal } from "../../components/modal/Modal";
 import { useAuthTokenStore } from "../../store/useAuthTokenStore";
 import { useModalStore } from "../../store/useModalStore";
@@ -28,30 +28,35 @@ export function Habit() {
   const { isModalOpen, closeModal, openModal } = useModalStore();
   const { exportCsv } = useHabitDayCsvExport();
   const navigate = useNavigate();
-  const { data } = useQuery<HabitDay[]>({
+  const { data } = useQuery<HabitDay[] | null>({
     queryKey: ["habitDayList", id],
     queryFn: async () => {
-      return await getAuthData({ url: `${apiUrl}/habit-day/${id}`, token });
+      return await getAuthData<HabitDay[]>({
+        url: `${apiUrl}/habit-day/${id}`,
+        token,
+      });
     },
     enabled: Boolean(id) && Boolean(token),
   });
 
-  const { data: habitData, error } = useQuery<IHabitCard>({
+  const { data: habitData, error } = useQuery<IHabitCard | null>({
     queryKey: ["habit", id],
     queryFn: async () =>
-      getAuthData({ url: `${apiUrl}/habit/get-one?habitId=${id}`, token }),
+      getAuthData<IHabitCard>({
+        url: `${apiUrl}/habit/get-one?habitId=${id}`,
+        token,
+      }),
     enabled: Boolean(id) && Boolean(token),
   });
 
   useEffect(() => {
     if (error) {
-      console.log(error.message);
-      if (error.message === "UNAUTHORIZED") {
+      if (error instanceof ApiError && error.code === "UNAUTHORIZED") {
         clearToken();
         navigate("/login", { replace: true });
       }
     }
-  }, [error, error?.message]);
+  }, [error]);
 
   const days = useMemo(() => {
     const base = Array.from({ length: 30 }, () => null as HabitDay | null);
