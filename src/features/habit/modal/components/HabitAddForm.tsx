@@ -5,6 +5,7 @@ import { useModalStore } from "../../../../store/useModalStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postAuthData } from "../../../../apis/fetch";
 import { apiUrl } from "../../../../apis/env";
+import { habitQueryKeys } from "../../habitQueryKeys";
 
 type AddHabitForm = {
   habitTitle: string;
@@ -28,7 +29,7 @@ export function HabitAddForm() {
       success("성공!");
 
       queryClient.invalidateQueries({
-        queryKey: ["habitList"],
+        queryKey: habitQueryKeys.habitList(),
       });
       closeModal();
     },

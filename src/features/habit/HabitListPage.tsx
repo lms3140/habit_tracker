@@ -13,6 +13,7 @@ import { Modal } from "../../components/modal/Modal";
 import { HabitModal } from "./modal/HabitModal";
 import { BackButton } from "../../components/button/BackButton";
 import { ErrorStateComponent } from "../../components/ErrorState/ErrorStateComponent";
+import { habitQueryKeys } from "./habitQueryKeys";
 
 //TODO - 값이 없을시 처리
 export function HabitListPage() {
@@ -24,7 +25,7 @@ export function HabitListPage() {
   const { isLoading, isError, error, data, refetch } = useQuery<
     IHabitCard[] | null
   >({
-    queryKey: ["habitList"],
+    queryKey: habitQueryKeys.habitList(),
     queryFn: async () => {
       return await getAuthData<IHabitCard[]>({
         url: `${apiUrl}/habit/list`,

@@ -15,6 +15,7 @@ import type {
 import { Button } from "../../../../components/button/Button";
 import { SegmentedRadioGroup } from "../../../../components/input/Radio";
 import { SelectField } from "../../../../components/input/Select";
+import { habitQueryKeys, parseHabitId } from "../../habitQueryKeys";
 
 type HabitDayForm = {
   habitComment: string;
@@ -59,15 +60,18 @@ export function HabitDayForm({ habitId }: FormProps) {
   const { register, handleSubmit } = useForm<HabitDayForm>();
   const { token } = useAuthTokenStore();
   const { id } = useParams();
+  const parsedHabitId = parseHabitId(id);
 
   // TODO: 에러처리가 필요합니다. 지금은 단순 타입가드입니다.
   if (habitIndex === null) return <></>;
 
   const { data: habitDays } = useQuery<HabitDay[] | null>({
-    queryKey: ["habitDayList", id],
+    queryKey: parsedHabitId
+      ? habitQueryKeys.habitDayList(parsedHabitId)
+      : habitQueryKeys.habitDayList(0),
     queryFn: () =>
       getAuthData<HabitDay[]>({ url: `${apiUrl}/habit-day/${id}`, token }),
-    enabled: Boolean(id) && Boolean(token),
+    enabled: Boolean(parsedHabitId) && Boolean(token),
   });
 
   const habitDay = habitDays?.find((d) => d.habitIndex === habitIndex);
@@ -93,9 +97,10 @@ export function HabitDayForm({ habitId }: FormProps) {
     },
 
     onSuccess: () => {
-      const habitId = Number(id);
-      if (Number.isInteger(habitId) && habitId > 0) {
-        queryClient.invalidateQueries({ queryKey: ["habitDayList", habitId] });
+      if (parsedHabitId) {
+        queryClient.invalidateQueries({
+          queryKey: habitQueryKeys.habitDayList(parsedHabitId),
+        });
       }
     },
 

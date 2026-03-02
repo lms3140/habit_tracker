@@ -7,6 +7,7 @@ import { postAuthData } from "../../../../apis/fetch";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiUrl } from "../../../../apis/env";
 import { useAuthTokenStore } from "../../../../store/useAuthTokenStore";
+import { habitQueryKeys } from "../../habitQueryKeys";
 
 export function HabitCardMenu({ habitCardObj }: HabitCardProps) {
   const { openModal, setForceEdit } = useModalStore();
@@ -32,7 +33,7 @@ export function HabitCardMenu({ habitCardObj }: HabitCardProps) {
         token,
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["habitList"] });
+      queryClient.invalidateQueries({ queryKey: habitQueryKeys.habitList() });
       alert("삭제성공");
     },
   });

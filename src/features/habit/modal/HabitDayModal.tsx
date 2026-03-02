@@ -9,9 +9,11 @@ import { useGetHabitList } from "../hook/useHabitList";
 import { useHabitDayModalStore } from "../store/HabitDayStore";
 import { HabitDayForm } from "./components/HabitDayForm";
 import { HabitDayInfo } from "./components/HabitDayInfo";
+import { habitQueryKeys, parseHabitId } from "../habitQueryKeys";
 
 export function HabitDayModal() {
   const { id } = useParams();
+  const habitId = parseHabitId(id);
   const { habitIndex } = useHabitDayModalStore();
   const { token } = useAuthTokenStore();
   const { setForceEdit, forceEdit } = useModalStore();
@@ -34,9 +36,11 @@ export function HabitDayModal() {
     }) => removeHabitDay(habitdayId, token),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["habitDayList", id],
-      });
+      if (habitId) {
+        queryClient.invalidateQueries({
+          queryKey: habitQueryKeys.habitDayList(habitId),
+        });
+      }
       success("성공");
     },
     onError: () => {
