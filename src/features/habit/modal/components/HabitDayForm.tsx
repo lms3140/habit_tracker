@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { apiUrl } from "../../../../apis/env";
-import { getAuthData, postAuthData } from "../../../../apis/fetch";
+import { ApiError, getAuthData, postAuthData } from "../../../../apis/fetch";
 import { useAuthTokenStore } from "../../../../store/useAuthTokenStore";
 import { useModalStore } from "../../../../store/useModalStore";
 import { useHabitDayModalStore } from "../../store/HabitDayStore";
@@ -16,6 +16,7 @@ import { Button } from "../../../../components/button/Button";
 import { SegmentedRadioGroup } from "../../../../components/input/Radio";
 import { SelectField } from "../../../../components/input/Select";
 import { habitQueryKeys, parseHabitId } from "../../habitQueryKeys";
+import { useAlert } from "../../../../hooks/useAlert";
 
 type HabitDayForm = {
   habitComment: string;
@@ -61,7 +62,7 @@ export function HabitDayForm({ habitId }: FormProps) {
   const { token } = useAuthTokenStore();
   const { id } = useParams();
   const parsedHabitId = parseHabitId(id);
-
+  const { success, error } = useAlert();
   // TODO: 에러처리가 필요합니다. 지금은 단순 타입가드입니다.
   if (habitIndex === null) return <></>;
 
@@ -97,20 +98,25 @@ export function HabitDayForm({ habitId }: FormProps) {
     },
 
     onSuccess: () => {
-      if (parsedHabitId) {
-        queryClient.invalidateQueries({
-          queryKey: habitQueryKeys.habitDayList(parsedHabitId),
-        });
+      // ✅ 여기서만 invalidate + 모달 닫기
+      const hid = Number(id);
+      if (Number.isInteger(hid) && hid > 0) {
+        queryClient.invalidateQueries({ queryKey: ["habitDayList", hid] }); // (이미 통일하셨다면 통일된 키 함수로)
+        // queryClient.invalidateQueries({ queryKey: habitQueryKeys.habitDayList(hid) });
       }
+
+      success(habitDay ? "수정했습니다." : "등록했습니다.");
+      closeModal(); // ✅ 성공일 때만 닫기
     },
 
-    onError: () => {
-      console.error("등록 중 오류가 발생했습니다.");
-    },
-
-    onSettled: () => {
-      setForceEdit(false);
-      closeModal();
+    onError: (e) => {
+      // ✅ 실패면 모달 유지 + 메시지만
+      if (e instanceof ApiError) {
+        if (e.code === "UNAUTHORIZED") return error("세션이 만료되었습니다.");
+        if (e.status === 403) return error("권한이 없습니다.");
+        if (e.status === 404) return error("대상이 존재하지 않습니다.");
+      }
+      error("저장에 실패했습니다. 다시 시도해 주세요.");
     },
   });
 
@@ -168,9 +174,19 @@ export function HabitDayForm({ habitId }: FormProps) {
         transition
       "
       />
-
+      {saveHabitDayMutation.isPending ? (
+        <div className="text-sm text-ds-ink-muted">저장 중...</div>
+      ) : saveHabitDayMutation.isPaused ? (
+        <div className="text-sm text-ds-ink-muted">
+          오프라인 상태라 저장이 대기 중입니다. 연결되면 자동으로 재시도됩니다.
+        </div>
+      ) : null}
       <div className="flex justify-end">
-        <Button type="submit" variant="primary">
+        <Button
+          disabled={saveHabitDayMutation.isPending}
+          type="submit"
+          variant="primary"
+        >
           {habitDay ? "수정" : "등록"}
         </Button>
       </div>

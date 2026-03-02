@@ -10,41 +10,43 @@ import { useHabitDayModalStore } from "../store/HabitDayStore";
 import { HabitDayForm } from "./components/HabitDayForm";
 import { HabitDayInfo } from "./components/HabitDayInfo";
 import { habitQueryKeys, parseHabitId } from "../habitQueryKeys";
+import { ApiError } from "../../../apis/fetch";
 
 export function HabitDayModal() {
   const { id } = useParams();
   const habitId = parseHabitId(id);
   const { habitIndex } = useHabitDayModalStore();
   const { token } = useAuthTokenStore();
-  const { setForceEdit, forceEdit } = useModalStore();
+  const { setForceEdit, forceEdit, closeModal } = useModalStore();
 
   const { error, success } = useAlert();
 
   if (habitIndex === null || !id || !token) {
     return <div className="w-full"></div>;
   }
-
+  if (habitIndex === null || !habitId || !token) return null;
   const queryClient = useQueryClient();
 
-  const removeHabitMutaion = useMutation({
-    mutationFn: ({
-      habitdayId,
-      token,
-    }: {
-      habitdayId: number;
-      token: string;
-    }) => removeHabitDay(habitdayId, token),
-
-    onSuccess: () => {
-      if (habitId) {
-        queryClient.invalidateQueries({
-          queryKey: habitQueryKeys.habitDayList(habitId),
-        });
-      }
-      success("성공");
+  const removeHabitMutation = useMutation({
+    mutationFn: (habitDayId: number) => removeHabitDay(habitDayId, token),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: habitQueryKeys.habitDayList(habitId),
+      });
+      success("삭제했습니다.");
+      closeModal(); // 성공일 때만 닫기
     },
-    onError: () => {
-      error("에러!");
+    onError: (e) => {
+      // 실패면 모달 유지 + 메시지만
+      if (e instanceof ApiError) {
+        if (e.code === "UNAUTHORIZED") {
+          error("세션이 만료되었습니다."); // 전역 401 처리 흐름에 자연스럽게 붙음
+          return;
+        }
+        if (e.status === 403) return error("권한이 없습니다.");
+        if (e.status === 404) return error("대상이 존재하지 않습니다.");
+      }
+      error("삭제에 실패했습니다. 다시 시도해 주세요.");
     },
   });
 
@@ -52,10 +54,12 @@ export function HabitDayModal() {
 
   const target = habitDays?.find((v) => v.habitIndex === habitIndex);
 
-  //TODO - 삭제시 confirm 받기
-  const handleDayRemoveBtn = async () => {
-    if (!target || !token) return; // 예외처리가 필요합니다
-    removeHabitMutaion.mutate({ habitdayId: target.habitDayId, token });
+  const handleDayRemoveBtn = () => {
+    if (!target) return;
+
+    if (!window.confirm("정말 삭제하시겠습니까?")) return;
+
+    removeHabitMutation.mutate(target.habitDayId);
   };
 
   const editMode = forceEdit || !target;
@@ -76,7 +80,7 @@ export function HabitDayModal() {
             type="button"
             variant="destructive"
             onClick={handleDayRemoveBtn}
-            disabled={removeHabitMutaion.isPending}
+            disabled={removeHabitMutation.isPending}
           >
             삭제하기
           </Button>
