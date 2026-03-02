@@ -1,4 +1,3 @@
-// src/apis/fetch.ts
 export type ApiErrorCode =
   | "UNAUTHORIZED"
   | "FORBIDDEN"
@@ -28,7 +27,7 @@ type RequestParams = {
   method: "GET" | "POST";
   token?: string | null;
   data?: unknown;
-  timeoutMs?: number; // MVP optional
+  timeoutMs?: number;
 };
 
 const DEFAULT_TIMEOUT_MS = 10_000;
@@ -56,7 +55,6 @@ async function request<T>({
 
     if (response.status === 204) return null;
 
-    // ✅ 401 규격화
     if (response.status === 401) {
       throw new ApiError({
         code: "UNAUTHORIZED",
@@ -92,7 +90,7 @@ async function request<T>({
 
     return (await response.json()) as T;
   } catch (err: unknown) {
-    // ✅ Abort(타임아웃)
+    // 타임아웃
     if (err instanceof DOMException && err.name === "AbortError") {
       throw new ApiError({
         code: "TIMEOUT",
@@ -100,7 +98,7 @@ async function request<T>({
       });
     }
 
-    // ✅ 네트워크 오류(오프라인 등)
+    // 네트워크 오류
     if (err instanceof TypeError) {
       throw new ApiError({
         code: "NETWORK_ERROR",
@@ -108,10 +106,10 @@ async function request<T>({
       });
     }
 
-    // ✅ 이미 ApiError면 그대로 던지기
+    // ApiError 그대로 던지기
     if (err instanceof ApiError) throw err;
 
-    // ✅ 기타(예상 못한 에러)
+    // 기타
     throw new ApiError({
       code: "HTTP_ERROR",
       message: "알 수 없는 오류가 발생했습니다.",
@@ -121,7 +119,7 @@ async function request<T>({
   }
 }
 
-/** === 외부 공개 API: 기존 함수 이름 최대 유지 === */
+/** === 외부 공개 API === */
 
 type GetDataParams = { url: string; token?: string | null };
 type OnlyUrl = Pick<GetDataParams, "url">;

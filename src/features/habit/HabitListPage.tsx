@@ -15,7 +15,6 @@ import { BackButton } from "../../components/button/BackButton";
 import { ErrorStateComponent } from "../../components/ErrorState/ErrorStateComponent";
 import { habitQueryKeys } from "./habitQueryKeys";
 
-//TODO - 값이 없을시 처리
 export function HabitListPage() {
   const navigate = useNavigate();
   const { token } = useAuthTokenStore();

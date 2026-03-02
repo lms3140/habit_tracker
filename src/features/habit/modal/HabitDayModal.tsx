@@ -34,13 +34,12 @@ export function HabitDayModal() {
         queryKey: habitQueryKeys.habitDayList(habitId),
       });
       success("삭제했습니다.");
-      closeModal(); // 성공일 때만 닫기
+      closeModal();
     },
     onError: (e) => {
-      // 실패면 모달 유지 + 메시지만
       if (e instanceof ApiError) {
         if (e.code === "UNAUTHORIZED") {
-          error("세션이 만료되었습니다."); // 전역 401 처리 흐름에 자연스럽게 붙음
+          error("세션이 만료되었습니다.");
           return;
         }
         if (e.status === 403) return error("권한이 없습니다.");

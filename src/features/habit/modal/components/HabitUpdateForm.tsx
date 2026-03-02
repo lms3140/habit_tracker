@@ -20,7 +20,7 @@ export function HabitUpdateForm() {
   const { closeModal, resetForceEdit } = useModalStore();
 
   if (!habitCard) {
-    return <div className="w-full">{/* 오류페이지 안내 */}</div>;
+    return <div className="w-full"></div>;
   }
 
   const queryClient = useQueryClient();

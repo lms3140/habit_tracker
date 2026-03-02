@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuthTokenStore } from "./store/useAuthTokenStore";
 
-//TODO - 값이 없을시 처리
 function Home() {
   const { token } = useAuthTokenStore();
 
@@ -28,7 +27,7 @@ function Home() {
               focus:outline-none focus:ring-2 focus:ring-ds-ring focus:ring-offset-2 focus:ring-offset-ds-bg
             "
           >
-            하빗 ㄱㄱ
+            습관
           </Link>
 
           {!token && (
