@@ -1,6 +1,8 @@
 // src/apis/fetch.ts
 export type ApiErrorCode =
   | "UNAUTHORIZED"
+  | "FORBIDDEN"
+  | "NOT_FOUND"
   | "HTTP_ERROR"
   | "NETWORK_ERROR"
   | "TIMEOUT";
@@ -63,7 +65,22 @@ async function request<T>({
       });
     }
 
-    // ✅ 그 외 비정상 응답은 전부 throw
+    if (response.status === 403) {
+      throw new ApiError({
+        code: "FORBIDDEN",
+        status: 403,
+        message: "필요한 권한이 없습니다.",
+      });
+    }
+
+    if (response.status === 404) {
+      throw new ApiError({
+        code: "NOT_FOUND",
+        status: 404,
+        message: "존재하지 않는 요청입니다.",
+      });
+    }
+
     if (!response.ok) {
       // MVP: 서버 에러 메시지를 굳이 파싱하지 않고 기본 메시지로 통일
       throw new ApiError({
