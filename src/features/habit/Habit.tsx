@@ -15,6 +15,7 @@ import { HabitPieChart } from "./HabitPieChart";
 import { BackButton } from "../../components/button/BackButton";
 import { NotFoundPage } from "../error/NotFoundPage";
 import { ErrorStateComponent } from "../../components/ErrorState/ErrorStateComponent";
+import { habitQueryKeys } from "./habitQueryKeys";
 
 const stateMap: Record<HabitCompleted | "EMPTY", string> = {
   SUCCESS:
@@ -45,7 +46,7 @@ export function Habit() {
     refetch,
     isLoading: isHabitDayLoading,
   } = useQuery<HabitDay[] | null>({
-    queryKey: ["habitDayList", habitId],
+    queryKey: habitQueryKeys.habitDayList(habitId),
     queryFn: async () => {
       return await getAuthData<HabitDay[]>({
         url: `${apiUrl}/habit-day/${habitId}`,
@@ -61,7 +62,7 @@ export function Habit() {
     isError: isHabitError,
     error: habitError,
   } = useQuery<IHabitCard | null>({
-    queryKey: ["habit", habitId],
+    queryKey: habitQueryKeys.habitDetail(habitId),
     queryFn: async () =>
       getAuthData<IHabitCard>({
         url: `${apiUrl}/habit/get-one?habitId=${habitId}`,

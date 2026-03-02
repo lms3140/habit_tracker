@@ -5,6 +5,7 @@ import { postAuthData } from "../../../../apis/fetch";
 import { useAuthTokenStore } from "../../../../store/useAuthTokenStore";
 import { useModalStore } from "../../../../store/useModalStore";
 import { useHabitModalStore } from "../../store/HabitModalStore";
+import { habitQueryKeys } from "../../habitQueryKeys";
 
 type HabitUpdateForm = {
   habitTitle: string;
@@ -33,7 +34,7 @@ export function HabitUpdateForm() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["habitList"],
+        queryKey: habitQueryKeys.habitList(),
       });
       closeModal();
       resetForceEdit();
