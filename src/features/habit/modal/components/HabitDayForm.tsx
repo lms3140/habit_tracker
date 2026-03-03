@@ -27,7 +27,7 @@ type HabitDayForm = {
 };
 
 type FormProps = {
-  habitId: string;
+  habitId: number;
 };
 
 const DIFFICULTY_OPTIONS = [
@@ -63,8 +63,6 @@ export function HabitDayForm({ habitId }: FormProps) {
   const { id } = useParams();
   const parsedHabitId = parseHabitId(id);
   const { success, error } = useAlert();
-
-  if (habitIndex === null) return <></>;
 
   const { data: habitDays } = useQuery<HabitDay[] | null>({
     queryKey: parsedHabitId
@@ -121,6 +119,9 @@ export function HabitDayForm({ habitId }: FormProps) {
     if (habitIndex === null) return;
     saveHabitDayMutation.mutate(data);
   };
+
+  if (habitIndex === null) return <></>;
+
   return (
     <form
       onSubmit={handleSubmit(onSubmitHabitDay)}

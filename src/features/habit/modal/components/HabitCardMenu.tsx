@@ -15,7 +15,7 @@ export function HabitCardMenu({ habitCardObj }: HabitCardProps) {
   const { token } = useAuthTokenStore();
   useEffect(() => {
     return () => reset();
-  }, []);
+  }, [reset]);
 
   const handleEditBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

@@ -5,18 +5,16 @@ import { getAuthData } from "../../../apis/fetch";
 import { habitQueryKeys, parseHabitId } from "../habitQueryKeys";
 
 type GetHabitListParams = {
-  id: string;
-  token: string;
+  id: number | null;
+  token: string | null;
 };
 export const useGetHabitList = ({ id, token }: GetHabitListParams) => {
   const habitId = parseHabitId(id);
 
   return useQuery<HabitDay[] | null>({
-    queryKey: habitId
-      ? habitQueryKeys.habitDayList(habitId)
-      : habitQueryKeys.habitDayList(0),
+    queryKey: habitQueryKeys.habitDayList(habitId ?? 0),
     queryFn: () =>
-      getAuthData<HabitDay[]>({ url: `${apiUrl}/habit-day/${id}`, token }),
+      getAuthData<HabitDay[]>({ url: `${apiUrl}/habit-day/${habitId}`, token }),
     enabled: Boolean(habitId) && Boolean(token),
   });
 };

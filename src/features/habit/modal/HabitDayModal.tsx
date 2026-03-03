@@ -21,15 +21,20 @@ export function HabitDayModal() {
 
   const { error, success } = useAlert();
 
-  if (habitIndex === null || !id || !token) {
-    return <div className="w-full"></div>;
-  }
-  if (habitIndex === null || !habitId || !token) return null;
   const queryClient = useQueryClient();
 
   const removeHabitMutation = useMutation({
-    mutationFn: (habitDayId: number) => removeHabitDay(habitDayId, token),
+    mutationFn: (habitDayId: number) => {
+      if (!token || !habitId) {
+        throw new ApiError({
+          code: "UNAUTHORIZED",
+          message: "Missing token or habitId",
+        });
+      }
+      return removeHabitDay(habitDayId, token);
+    },
     onSuccess: async () => {
+      if (!habitId) return;
       await queryClient.invalidateQueries({
         queryKey: habitQueryKeys.habitDayList(habitId),
       });
@@ -48,8 +53,7 @@ export function HabitDayModal() {
       error("삭제에 실패했습니다. 다시 시도해 주세요.");
     },
   });
-
-  const { data: habitDays } = useGetHabitList({ id, token });
+  const { data: habitDays } = useGetHabitList({ id: habitId, token });
 
   const target = habitDays?.find((v) => v.habitIndex === habitIndex);
 
@@ -60,6 +64,7 @@ export function HabitDayModal() {
 
     removeHabitMutation.mutate(target.habitDayId);
   };
+  if (habitIndex === null || !habitId || !token) return null;
 
   const editMode = forceEdit || !target;
 
@@ -67,7 +72,7 @@ export function HabitDayModal() {
     <div className="w-full flex flex-col gap-6">
       <div>
         {editMode ? (
-          <HabitDayForm habitId={id} />
+          <HabitDayForm habitId={habitId} />
         ) : (
           <HabitDayInfo habitDay={target} />
         )}
