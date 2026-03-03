@@ -19,10 +19,6 @@ export function HabitUpdateForm() {
   const { token } = useAuthTokenStore();
   const { closeModal, resetForceEdit } = useModalStore();
 
-  if (!habitCard) {
-    return <div className="w-full"></div>;
-  }
-
   const queryClient = useQueryClient();
   const updateHabitMutation = useMutation({
     mutationFn: (habitTitle: string) => {
@@ -45,6 +41,10 @@ export function HabitUpdateForm() {
   const onSubmitHabitUpdate = (data: HabitUpdateForm) => {
     updateHabitMutation.mutate(data.habitTitle);
   };
+
+  if (!habitCard) {
+    return <div className="w-full"></div>;
+  }
 
   return (
     <div className="w-full max-w-md mx-auto">

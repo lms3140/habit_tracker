@@ -134,7 +134,7 @@ export const getAuthData = async <T>({ url, token }: GetDataParams) => {
 
 type PostDataParams = {
   url: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   token?: string | null;
 };
 type WithOutTokenParams = Omit<PostDataParams, "token">;

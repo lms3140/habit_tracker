@@ -1,5 +1,5 @@
 export function parseHabitId(
-  habitId: string | number | undefined,
+  habitId: string | number | undefined | null,
 ): number | null {
   if (habitId == null) return null;
 

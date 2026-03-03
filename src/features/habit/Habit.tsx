@@ -33,11 +33,6 @@ export function Habit() {
   const navigate = useNavigate();
 
   const habitId = Number(id);
-  const isValid = Number.isInteger(habitId) && habitId > 0;
-
-  if (!isValid) {
-    return <NotFoundPage />;
-  }
 
   const {
     data,
@@ -80,6 +75,12 @@ export function Habit() {
     });
     return base;
   }, [data]);
+
+  const isValidParams = Number.isInteger(habitId) && habitId > 0;
+
+  if (!isValidParams) {
+    return <NotFoundPage />;
+  }
 
   const handleClickDay = (index: number) => {
     if (isLoading) return;
