@@ -17,6 +17,7 @@ import { SegmentedRadioGroup } from "../../../../components/input/Radio";
 import { SelectField } from "../../../../components/input/Select";
 import { habitQueryKeys, parseHabitId } from "../../habitQueryKeys";
 import { useAlert } from "../../../../hooks/useAlert";
+import { useEffect } from "react";
 
 type HabitDayForm = {
   habitComment: string;
@@ -57,12 +58,25 @@ const SUCCESS_OPTION = [
 
 export function HabitDayForm({ habitId }: FormProps) {
   const { habitIndex } = useHabitDayModalStore();
-  const { closeModal } = useModalStore();
-  const { register, handleSubmit } = useForm<HabitDayForm>();
+  const { programCloseModal, setCloseBlocked, setDirty } = useModalStore();
+  const { register, handleSubmit, formState } = useForm<HabitDayForm>({
+    defaultValues: {
+      habitComment: "",
+      habitDifficulty: "NORMAL",
+      habitCondition: "NORMAL",
+      habitPlace: "HOME",
+      success: true,
+    },
+  });
   const { token } = useAuthTokenStore();
   const { id } = useParams();
   const parsedHabitId = parseHabitId(id);
   const { success, error } = useAlert();
+
+  useEffect(() => {
+    setDirty(formState.isDirty);
+    return () => setDirty(false);
+  }, [formState.isDirty, setDirty]);
 
   const { data: habitDays } = useQuery<HabitDay[] | null>({
     queryKey: parsedHabitId
@@ -94,7 +108,9 @@ export function HabitDayForm({ habitId }: FormProps) {
         token,
       });
     },
-
+    onMutate: () => {
+      setCloseBlocked(true);
+    },
     onSuccess: () => {
       const hid = Number(id);
       if (Number.isInteger(hid) && hid > 0) {
@@ -102,7 +118,7 @@ export function HabitDayForm({ habitId }: FormProps) {
       }
 
       success(habitDay ? "수정했습니다." : "등록했습니다.");
-      closeModal();
+      programCloseModal();
     },
 
     onError: (e) => {
@@ -112,6 +128,9 @@ export function HabitDayForm({ habitId }: FormProps) {
         if (e.status === 404) return error("대상이 존재하지 않습니다.");
       }
       error("저장에 실패했습니다. 다시 시도해 주세요.");
+    },
+    onSettled: () => {
+      setCloseBlocked(false);
     },
   });
 

@@ -19,7 +19,8 @@ export function HabitListPage() {
   const navigate = useNavigate();
   const { token } = useAuthTokenStore();
 
-  const { isModalOpen, closeModal, openModal } = useModalStore();
+  const { isModalOpen, closeModal, openModal, isCloseBlocked, isDirty } =
+    useModalStore();
 
   const { isLoading, isError, error, data, refetch } = useQuery<
     IHabitCard[] | null
@@ -33,6 +34,13 @@ export function HabitListPage() {
     },
     enabled: Boolean(token),
   });
+
+  const handleModalClose = () => {
+    if (!isDirty) return closeModal();
+    console.log(isDirty);
+    const ok = window.confirm("작성 중인 내용이 있습니다. 닫으시겠습니까?");
+    if (ok) closeModal();
+  };
 
   return (
     <div className="">
@@ -76,7 +84,11 @@ export function HabitListPage() {
           </>
         )}
 
-        <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={handleModalClose}
+          isCloseBlocked={isCloseBlocked}
+        >
           <HabitModal />
         </Modal>
       </Container>
