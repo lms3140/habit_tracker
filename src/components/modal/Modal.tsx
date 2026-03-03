@@ -6,11 +6,17 @@ const FOCUSABLE =
 
 type ModalProps = {
   isOpen: boolean;
-  onClose: () => void;
+  isCloseBlocked: boolean;
+  onRequestClose: () => void;
   children: React.ReactNode;
 };
 
-export function Modal({ isOpen, onClose, children }: ModalProps) {
+export function Modal({
+  isOpen,
+  onRequestClose,
+  isCloseBlocked,
+  children,
+}: ModalProps) {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const lastActiveRef = useRef<HTMLElement | null>(null);
 
@@ -30,8 +36,9 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
 
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        if (isCloseBlocked) return;
         e.preventDefault();
-        onClose();
+        onRequestClose();
         return;
       }
 
@@ -65,10 +72,12 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
     document.addEventListener("keydown", handler);
     return () => {
       document.removeEventListener("keydown", handler);
-      lastActiveRef.current?.focus();
+      if (lastActiveRef.current && document.contains(lastActiveRef.current)) {
+        lastActiveRef.current.focus();
+      }
       lastActiveRef.current = null;
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onRequestClose, isCloseBlocked]);
 
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
@@ -84,7 +93,11 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
       aria-modal="true"
       role="dialog"
       className="fixed inset-0 z-40 flex items-center justify-center bg-black/40"
-      onPointerDown={onClose}
+      onPointerDown={() => {
+        if (!isCloseBlocked) {
+          onRequestClose();
+        }
+      }}
     >
       <div
         ref={contentRef}

@@ -6,15 +6,25 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postAuthData } from "../../../../apis/fetch";
 import { apiUrl } from "../../../../apis/env";
 import { habitQueryKeys } from "../../habitQueryKeys";
+import { useEffect } from "react";
 
 type AddHabitForm = {
   habitTitle: string;
 };
 export function HabitAddForm() {
   const { token } = useAuthTokenStore();
-  const { closeModal } = useModalStore();
+  const { programCloseModal, setDirty } = useModalStore();
   const { success, error } = useAlert();
-  const { register, handleSubmit } = useForm<AddHabitForm>();
+  const { register, handleSubmit, formState } = useForm<AddHabitForm>({
+    defaultValues: {
+      habitTitle: "",
+    },
+  });
+
+  useEffect(() => {
+    setDirty(formState.isDirty);
+    return () => setDirty(false);
+  }, [formState.isDirty, setDirty]);
 
   const queryClient = useQueryClient();
 
@@ -31,7 +41,7 @@ export function HabitAddForm() {
       queryClient.invalidateQueries({
         queryKey: habitQueryKeys.habitList(),
       });
-      closeModal();
+      programCloseModal();
     },
     onError: () => {
       error("실패");

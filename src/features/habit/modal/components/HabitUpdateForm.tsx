@@ -6,6 +6,7 @@ import { useAuthTokenStore } from "../../../../store/useAuthTokenStore";
 import { useModalStore } from "../../../../store/useModalStore";
 import { useHabitModalStore } from "../../store/HabitModalStore";
 import { habitQueryKeys } from "../../habitQueryKeys";
+import { useEffect } from "react";
 
 type HabitUpdateForm = {
   habitTitle: string;
@@ -13,11 +14,16 @@ type HabitUpdateForm = {
 
 export function HabitUpdateForm() {
   const { habitCard } = useHabitModalStore();
-  const { register, handleSubmit } = useForm<HabitUpdateForm>({
-    defaultValues: { habitTitle: habitCard?.habitTitle },
+  const { register, handleSubmit, formState } = useForm<HabitUpdateForm>({
+    defaultValues: { habitTitle: habitCard?.habitTitle ?? "" },
   });
   const { token } = useAuthTokenStore();
-  const { closeModal, resetForceEdit } = useModalStore();
+  const { programCloseModal, resetForceEdit, setDirty } = useModalStore();
+
+  useEffect(() => {
+    setDirty(formState.isDirty);
+    return () => setDirty(false);
+  }, [formState.isDirty, setDirty]);
 
   const queryClient = useQueryClient();
   const updateHabitMutation = useMutation({
@@ -32,7 +38,7 @@ export function HabitUpdateForm() {
       queryClient.invalidateQueries({
         queryKey: habitQueryKeys.habitList(),
       });
-      closeModal();
+      programCloseModal();
       resetForceEdit();
     },
     onError: () => {},

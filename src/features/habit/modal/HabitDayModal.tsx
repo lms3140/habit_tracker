@@ -17,7 +17,7 @@ export function HabitDayModal() {
   const habitId = parseHabitId(id);
   const { habitIndex } = useHabitDayModalStore();
   const { token } = useAuthTokenStore();
-  const { setForceEdit, forceEdit, closeModal } = useModalStore();
+  const { setForceEdit, forceEdit, programCloseModal } = useModalStore();
 
   const { error, success } = useAlert();
 
@@ -39,7 +39,7 @@ export function HabitDayModal() {
         queryKey: habitQueryKeys.habitDayList(habitId),
       });
       success("삭제했습니다.");
-      closeModal();
+      programCloseModal();
     },
     onError: (e) => {
       if (e instanceof ApiError) {
@@ -64,7 +64,10 @@ export function HabitDayModal() {
 
     removeHabitMutation.mutate(target.habitDayId);
   };
-  if (habitIndex === null || !habitId || !token) return null;
+  if (habitIndex === null || !habitId || !token) {
+    programCloseModal();
+    return null;
+  }
 
   const editMode = forceEdit || !target;
 

@@ -1,10 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useAuthTokenStore } from "../store/useAuthTokenStore";
 import { getMe } from "../features/auth/apis/auth";
+import { useEffect } from "react";
+import { useModalStore } from "../store/useModalStore";
 
 export function RootLayout() {
   const token = useAuthTokenStore((s) => s.token);
+  const location = useLocation();
+  const { programCloseModal } = useModalStore();
+
+  useEffect(() => {
+    programCloseModal();
+  }, [location.pathname, programCloseModal]);
 
   useQuery({
     queryKey: ["me"],

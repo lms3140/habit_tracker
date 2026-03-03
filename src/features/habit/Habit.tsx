@@ -28,7 +28,8 @@ export function Habit() {
   const { id } = useParams();
   const { token } = useAuthTokenStore();
   const { setHabitIndex } = useHabitDayModalStore();
-  const { isModalOpen, closeModal, openModal } = useModalStore();
+  const { isModalOpen, closeModal, openModal, isCloseBlocked, isDirty } =
+    useModalStore();
   const { exportCsv } = useHabitDayCsvExport();
   const navigate = useNavigate();
 
@@ -66,8 +67,6 @@ export function Habit() {
     enabled: Boolean(habitId) && Boolean(token),
   });
 
-  const isLoading = isHabitDayLoading || isHabitLoading;
-
   const days = useMemo(() => {
     const base = Array.from({ length: 30 }, () => null as HabitDay | null);
     (data ?? []).forEach((day) => {
@@ -76,6 +75,7 @@ export function Habit() {
     return base;
   }, [data]);
 
+  const isLoading = isHabitDayLoading || isHabitLoading;
   const isValidParams = Number.isInteger(habitId) && habitId > 0;
 
   if (!isValidParams) {
@@ -86,6 +86,13 @@ export function Habit() {
     if (isLoading) return;
     setHabitIndex(index);
     openModal();
+  };
+
+  const handleModalClose = () => {
+    if (!isDirty) return closeModal();
+
+    const ok = window.confirm("작성 중인 내용이 있습니다. 닫으시겠습니까?");
+    if (ok) closeModal();
   };
 
   // habitDetail 에러 처리
@@ -218,7 +225,11 @@ export function Habit() {
           <HabitPieChart habitList={data ?? null} />
         </div>
 
-        <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={handleModalClose}
+          isCloseBlocked={isCloseBlocked}
+        >
           <HabitDayModal />
         </Modal>
       </div>
