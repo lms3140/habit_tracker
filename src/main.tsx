@@ -6,7 +6,11 @@ import { router } from "./router/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ApiError } from "./apis/fetch";
 import { useAuthTokenStore } from "./store/useAuthTokenStore";
-const AUTH_REASON_KEY = "auth-reason"; // sessionStorage에 잠깐 저장할 키
+import { useThemeStore } from "./store/useThemeStore";
+
+const AUTH_REASON_KEY = "auth-reason";
+
+useThemeStore.getState().initDomTheme();
 
 const queryClient = new QueryClient({
   defaultOptions: {

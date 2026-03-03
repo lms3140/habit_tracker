@@ -4,64 +4,187 @@
    Design Tokens
 ========================= */
 
+/* =====================================================
+   0) Base DS tokens (default theme)
+===================================================== */
 @theme {
-  /* =====================================================
-     Colors
-  ===================================================== */
+  /* ---------- Text ---------- */
+  --color-ds-ink: #0e1c36;
+  --color-ds-ink-muted: rgba(14, 28, 54, 0.6);
 
-  /* Failed / Danger */
+  /* ---------- Brand / Primary ---------- */
+  --color-ds-primary: #afcbff;
+  --color-ds-primary-hover: #9fbcf5;
+
+  /* ---------- Surfaces ---------- */
+  --color-ds-bg: #f9fbf2;
+  --color-ds-surface: #ffffff;
+  --color-ds-accent: #d7f9ff;
+
+  /* ---------- Border / Focus / Overlay ---------- */
+  --color-ds-border: rgba(14, 28, 54, 0.08);
+  --color-ds-ring: #afcbff;
+  --color-ds-overlay: rgba(0, 0, 0, 0.45);
+
+  /* ---------- Status: Danger ---------- */
   --color-ds-danger: #f07a7a;
   --color-ds-danger-hover: #e96a6a;
   --color-ds-danger-soft: rgba(240, 122, 122, 0.18);
 
-  /* --- Text --- */
-  /* 기본 텍스트 (강한 대비, 가독성 중심) */
-  --color-ds-ink: #0e1c36;
+  /* ---------- Status: Success ---------- */
+  --color-ds-success: #38b26c;
+  --color-ds-success-hover: #2fa35f;
+  --color-ds-success-soft: rgba(56, 178, 108, 0.18);
 
-  /* 보조 텍스트 (날짜, 설명, 메타 정보용) */
-  --color-ds-ink-muted: rgba(14, 28, 54, 0.6);
+  /* ---------- Status: Warning ---------- */
+  --color-ds-warning: #f2b84b;
+  --color-ds-warning-hover: #e6aa3c;
+  --color-ds-warning-soft: rgba(242, 184, 75, 0.2);
 
-  /* --- Brand / Primary Action --- */
-  /* 주요 버튼, 진행바, 액션 강조 */
-  --color-ds-primary: #afcbff;
+  /* ---------- Status: Info ---------- */
+  --color-ds-info: #4ea3ff;
+  --color-ds-info-hover: #3b96ff;
+  --color-ds-info-soft: rgba(78, 163, 255, 0.18);
 
-  /* hover 상태 */
-  --color-ds-primary-hover: #9fbcf5;
-
-  /* --- Background Layers --- */
-  /* 전체 앱 배경 */
-  --color-ds-bg: #f9fbf2;
-
-  /* 카드 / 모달 / 떠 있는 레이어 */
-  --color-ds-surface: #ffffff;
-
-  /* 가벼운 강조 영역 (hover 배경, subtle highlight) */
-  --color-ds-accent: #d7f9ff;
-
-  /* --- Borders & Focus --- */
-  /* 카드 테두리, 구분선 */
-  --color-ds-border: rgba(14, 28, 54, 0.08);
-
-  /* focus-visible 링 */
-  --color-ds-ring: #afcbff;
-
-  /* =====================================================
-     Radius
-  ===================================================== */
-
-  /* 기본 카드/버튼 */
+  /* ---------- Radius ---------- */
   --radius-ds: 14px;
-
-  /* 큰 카드 / 모달 */
   --radius-ds-lg: 18px;
-
-  /* pill 버튼 / 배지 */
   --radius-ds-pill: 9999px;
 
-  /* =====================================================
-     Shadow
-  ===================================================== */
-
-  /* 기본 카드 그림자 (과하지 않게) */
+  /* ---------- Shadow ---------- */
   --shadow-ds: 0 14px 35px -24px rgba(14, 28, 54, 0.25);
+  --shadow-ds-lg: 0 30px 80px -52px rgba(14, 28, 54, 0.35);
+}
+
+/* =====================================================
+   1) Theme: WHITE (explicit)
+===================================================== */
+:root[data-theme="white"] {
+  color-scheme: light;
+  /* 기본값이 이미 white라서 굳이 덮어쓸 건 없습니다. */
+}
+
+/* =====================================================
+   2) Theme: BLACK (grayscale dark)
+===================================================== */
+:root[data-theme="black"] {
+  color-scheme: dark;
+
+  --color-ds-primary: #a78bfa; /* violet-300 */
+  --color-ds-primary-hover: #8b5cf6;
+
+  --color-ds-bg: #0b0d10;
+  --color-ds-surface: #12161b;
+  --color-ds-accent: #1a2129;
+
+  --color-ds-ink: rgba(255, 255, 255, 0.92);
+  --color-ds-ink-muted: rgba(255, 255, 255, 0.65);
+
+  --color-ds-border: rgba(255, 255, 255, 0.1);
+  --color-ds-ring: #a78bfa;
+  --color-ds-overlay: rgba(0, 0, 0, 0.6);
+
+  --shadow-ds: 0 22px 60px -32px rgba(0, 0, 0, 0.7);
+  --shadow-ds-lg: 0 42px 120px -72px rgba(0, 0, 0, 0.82);
+
+  /* 상태색은 다크에서 너무 튀지 않게 살짝만 조정 */
+  --color-ds-danger: #ff7a7a;
+  --color-ds-danger-hover: #ff6a6a;
+  --color-ds-danger-soft: rgba(255, 122, 122, 0.18);
+
+  --color-ds-success: #47c37a;
+  --color-ds-success-hover: #3eb66f;
+  --color-ds-success-soft: rgba(71, 195, 122, 0.16);
+
+  --color-ds-warning: #f2c14e;
+  --color-ds-warning-hover: #e8b444;
+  --color-ds-warning-soft: rgba(242, 193, 78, 0.18);
+
+  --color-ds-info: #6db5ff;
+  --color-ds-info-hover: #55a9ff;
+  --color-ds-info-soft: rgba(109, 181, 255, 0.16);
+}
+
+/* =====================================================
+   3) Theme: GRAPE (light)
+===================================================== */
+:root[data-theme="grape"] {
+  color-scheme: light;
+
+  --color-ds-primary: #8b5cf6;
+  --color-ds-primary-hover: #7c3aed;
+
+  --color-ds-bg: #fbf7ff;
+  --color-ds-surface: #ffffff;
+  --color-ds-accent: #f1e8ff;
+
+  --color-ds-ink: #2a174a;
+  --color-ds-ink-muted: rgba(42, 23, 74, 0.6);
+
+  --color-ds-border: rgba(42, 23, 74, 0.1);
+  --color-ds-ring: #8b5cf6;
+
+  --color-ds-danger: #f06b8b;
+  --color-ds-danger-hover: #e85a7d;
+  --color-ds-danger-soft: rgba(240, 107, 139, 0.18);
+
+  --color-ds-success: #2fb574;
+  --color-ds-success-hover: #27a867;
+  --color-ds-success-soft: rgba(47, 181, 116, 0.18);
+
+  --color-ds-info: #6a7bff;
+  --color-ds-info-hover: #5568ff;
+  --color-ds-info-soft: rgba(106, 123, 255, 0.18);
+
+  --shadow-ds: 0 14px 35px -24px rgba(42, 23, 74, 0.22);
+  --shadow-ds-lg: 0 32px 90px -58px rgba(42, 23, 74, 0.3);
+}
+
+/* =====================================================
+   4) Theme: CHOCO (dark)
+===================================================== */
+:root[data-theme="choco"] {
+  color-scheme: dark;
+
+  --color-ds-primary: #d4a373;
+  --color-ds-primary-hover: #c99562;
+
+  --color-ds-bg: #15100c;
+  --color-ds-surface: #1c1510;
+  --color-ds-accent: #241b14;
+
+  --color-ds-ink: #f2e9df;
+  --color-ds-ink-muted: rgba(242, 233, 223, 0.7);
+
+  --color-ds-border: rgba(242, 233, 223, 0.12);
+  --color-ds-ring: #d4a373;
+  --color-ds-overlay: rgba(0, 0, 0, 0.55);
+
+  --color-ds-danger: #ff7a7a;
+  --color-ds-danger-hover: #ff6a6a;
+  --color-ds-danger-soft: rgba(255, 122, 122, 0.18);
+
+  --color-ds-success: #47c37a;
+  --color-ds-success-hover: #3eb66f;
+  --color-ds-success-soft: rgba(71, 195, 122, 0.16);
+
+  --color-ds-warning: #f2c14e;
+  --color-ds-warning-hover: #e8b444;
+  --color-ds-warning-soft: rgba(242, 193, 78, 0.18);
+
+  --color-ds-info: #6db5ff;
+  --color-ds-info-hover: #55a9ff;
+  --color-ds-info-soft: rgba(109, 181, 255, 0.16);
+
+  --shadow-ds: 0 22px 60px -32px rgba(0, 0, 0, 0.65);
+  --shadow-ds-lg: 0 42px 120px -72px rgba(0, 0, 0, 0.78);
+}
+
+/* =====================================================
+   5) Base apply (선택)
+===================================================== */
+html,
+body {
+  background: var(--color-ds-bg);
+  color: var(--color-ds-ink);
 }
