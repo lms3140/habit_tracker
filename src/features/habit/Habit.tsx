@@ -80,16 +80,6 @@ export function Habit() {
   const isLoading = isHabitDayLoading || isHabitLoading;
   const isValidParams = Number.isInteger(habitId) && habitId > 0;
 
-  if (!isValidParams) {
-    return <NotFoundPage />;
-  }
-
-  const handleClickDay = (index: number) => {
-    if (isLoading) return;
-    setHabitIndex(index);
-    openModal();
-  };
-
   const handleModalClose = useCallback(() => {
     const { isDirty, isCloseBlocked } = useModalStore.getState();
     if (isCloseBlocked) return;
@@ -101,6 +91,16 @@ export function Habit() {
     }
     closeModal();
   }, [closeModal]);
+
+  if (!isValidParams) {
+    return <NotFoundPage />;
+  }
+
+  const handleClickDay = (index: number) => {
+    if (isLoading) return;
+    setHabitIndex(index);
+    openModal();
+  };
 
   // habitDetail 에러 처리
   if (isHabitError && habitError instanceof ApiError) {

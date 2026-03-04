@@ -24,7 +24,6 @@ export function HabitListPage() {
   const closeModal = useModalStore((s) => s.closeModal);
   const openModal = useModalStore((s) => s.openModal);
   const isCloseBlocked = useModalStore((s) => s.isCloseBlocked);
-  const isDirty = useModalStore((s) => s.isDirty);
   const isNewestFirst = true;
   const { isLoading, isError, error, data, refetch } = useQuery<
     IHabitCard[] | null
@@ -45,7 +44,7 @@ export function HabitListPage() {
   });
   const [page, setPage] = useState(1);
 
-  const habits = data ?? [];
+  const habits = useMemo(() => data ?? [], [data]);
 
   const totalPages = Math.max(1, Math.ceil(habits.length / PAGE_SIZE));
 

@@ -19,12 +19,12 @@ export function Modal({
 }: ModalProps) {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const lastActiveRef = useRef<HTMLElement | null>(null);
-  const isComposingRef = useRef(false);
 
   useEffect(() => {
     if (!isOpen) return;
 
     lastActiveRef.current = document.activeElement as HTMLElement | null;
+
     const content = contentRef.current;
     if (!content) return;
 
@@ -35,13 +35,6 @@ export function Modal({
     (focusables[0] ?? content).focus();
 
     const handler = (e: KeyboardEvent) => {
-      if (
-        (e as any).isComposing ||
-        (e as any).nativeEvent?.isComposing ||
-        isComposingRef.current
-      ) {
-        return;
-      }
       if (e.key === "Escape") {
         if (isCloseBlocked) return;
         e.preventDefault();
