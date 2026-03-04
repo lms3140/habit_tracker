@@ -13,10 +13,10 @@ import { HabitCard } from "./HabitCard";
 import { HabitCardSkeleton } from "./HabitCardSkeleton";
 import { habitQueryKeys } from "./habitQueryKeys";
 import { HabitModal } from "./modal/HabitModal";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Button } from "../../components/button/Button";
 
-const PAGE_SIZE = 9;
+const PAGE_SIZE = 2;
 
 export function HabitListPage() {
   const token = useAuthTokenStore((s) => s.token);
@@ -48,15 +48,12 @@ export function HabitListPage() {
 
   const totalPages = Math.max(1, Math.ceil(habits.length / PAGE_SIZE));
 
-  useEffect(() => {
-    if (page > totalPages) setPage(totalPages);
-  }, [page, totalPages]);
+  const safePage = Math.min(page, totalPages);
 
   const pagedHabits = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
+    const start = (safePage - 1) * PAGE_SIZE;
     return habits.slice(start, start + PAGE_SIZE);
-  }, [habits, page]);
-  console.log(pagedHabits);
+  }, [habits, safePage]);
 
   const handleModalClose = useCallback(() => {
     const { isDirty, isCloseBlocked } = useModalStore.getState();
