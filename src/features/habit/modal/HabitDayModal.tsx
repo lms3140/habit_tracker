@@ -15,10 +15,11 @@ import { ApiError } from "../../../apis/fetch";
 export function HabitDayModal() {
   const { id } = useParams();
   const habitId = parseHabitId(id);
-  const { habitIndex } = useHabitDayModalStore();
-  const { token } = useAuthTokenStore();
-  const { setForceEdit, forceEdit, programCloseModal } = useModalStore();
-
+  const habitIndex = useHabitDayModalStore((s) => s.habitIndex);
+  const token = useAuthTokenStore((s) => s.token);
+  const setForceEdit = useModalStore((s) => s.setForceEdit);
+  const forceEdit = useModalStore((s) => s.forceEdit);
+  const programCloseModal = useModalStore((s) => s.programCloseModal);
   const { error, success } = useAlert();
 
   const queryClient = useQueryClient();

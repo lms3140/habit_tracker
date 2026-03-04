@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiUrl } from "../../apis/env";
 import { ApiError, getAuthData } from "../../apis/fetch";
@@ -12,10 +12,10 @@ import { useHabitDayModalStore } from "./store/HabitDayStore";
 import type { IHabitCard } from "../../types/globalType";
 import { useHabitDayCsvExport } from "../../hooks/useHabitDayCsvExport";
 import { HabitPieChart } from "./HabitPieChart";
-import { BackButton } from "../../components/button/BackButton";
 import { NotFoundPage } from "../error/NotFoundPage";
 import { ErrorStateComponent } from "../../components/ErrorState/ErrorStateComponent";
 import { habitQueryKeys } from "./habitQueryKeys";
+import { Button } from "../../components/button/Button";
 
 const stateMap: Record<HabitCompleted | "EMPTY", string> = {
   SUCCESS:
@@ -26,10 +26,12 @@ const stateMap: Record<HabitCompleted | "EMPTY", string> = {
 
 export function Habit() {
   const { id } = useParams();
-  const { token } = useAuthTokenStore();
-  const { setHabitIndex } = useHabitDayModalStore();
-  const { isModalOpen, closeModal, openModal, isCloseBlocked, isDirty } =
-    useModalStore();
+  const token = useAuthTokenStore((s) => s.token);
+  const setHabitIndex = useHabitDayModalStore((s) => s.setHabitIndex);
+  const isModalOpen = useModalStore((s) => s.isModalOpen);
+  const closeModal = useModalStore((s) => s.closeModal);
+  const openModal = useModalStore((s) => s.openModal);
+  const isCloseBlocked = useModalStore((s) => s.isCloseBlocked);
   const { exportCsv } = useHabitDayCsvExport();
   const navigate = useNavigate();
 
@@ -88,12 +90,17 @@ export function Habit() {
     openModal();
   };
 
-  const handleModalClose = () => {
-    if (!isDirty) return closeModal();
+  const handleModalClose = useCallback(() => {
+    const { isDirty, isCloseBlocked } = useModalStore.getState();
+    if (isCloseBlocked) return;
 
-    const ok = window.confirm("작성 중인 내용이 있습니다. 닫으시겠습니까?");
-    if (ok) closeModal();
-  };
+    if (isDirty) {
+      const ok = window.confirm("작성 중인 내용이 있습니다. 닫으시겠습니까?");
+      if (!ok) return;
+      closeModal();
+    }
+    closeModal();
+  }, [closeModal]);
 
   // habitDetail 에러 처리
   if (isHabitError && habitError instanceof ApiError) {
@@ -146,8 +153,6 @@ export function Habit() {
   return (
     <div className="">
       <div className="w-full max-w-4xl mx-auto">
-        <BackButton onClick={() => navigate("/habit")}>{"<<"}</BackButton>
-
         <div className="bg-ds-surface border border-ds-border rounded-ds-lg shadow-ds px-6 py-7">
           {/* Header */}
           <div className="flex items-center justify-between">
@@ -162,7 +167,7 @@ export function Habit() {
 
             <div className="text-sm text-ds-ink-muted flex items-center gap-3">
               <span>30일</span>
-              <button
+              <Button
                 type="button"
                 disabled={!data || isLoading}
                 onClick={() => {
@@ -176,7 +181,7 @@ export function Habit() {
                 }`}
               >
                 export
-              </button>
+              </Button>
             </div>
           </div>
 

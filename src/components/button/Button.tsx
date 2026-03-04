@@ -1,35 +1,45 @@
 import * as React from "react";
+import {
+  buttonClass,
+  type ButtonSize,
+  type ButtonVariant,
+} from "./buttonStyles";
 
-type ButtonVariant = "primary" | "secondary" | "destructive";
-
-const base =
-  "inline-flex items-center justify-center rounded-ds px-4 py-2 text-sm font-semibold " +
-  "transition-all duration-150 ease-out " +
-  "focus:outline-none focus-visible:ring-2 focus-visible:ring-ds-ring focus-visible:ring-offset-2 " +
-  "disabled:opacity-50 disabled:pointer-events-none " +
-  "active:translate-y-px";
-
-const variants: Record<ButtonVariant, string> = {
-  primary: "bg-ds-primary text-ds-ink " + "hover:brightness-95",
-
-  secondary:
-    "bg-ds-surface text-ds-ink border border-ds-border " + "hover:bg-ds-accent",
-
-  destructive:
-    "bg-ds-surface text-red-600 border border-red-200 " + "hover:bg-red-50",
+type ButtonProps = {
+  isLoading?: boolean;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  ghostMode?: boolean;
 };
 
 export function Button({
   variant = "primary",
+  size = "md",
   className = "",
+  isLoading = false,
+  disabled,
+  ghostMode,
+  children,
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: ButtonVariant;
-}) {
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps) {
+  const isDisabled = disabled || isLoading;
+
   return (
     <button
-      className={`${base} ${variants[variant]} ${className}`}
+      aria-busy={isLoading || undefined}
+      disabled={isDisabled}
+      className={`${buttonClass({ variant, size, className, ghostMode })} ${
+        isDisabled ? "disabled:opacity-60 disabled:cursor-not-allowed" : ""
+      }`}
       {...props}
-    />
+    >
+      <span className="inline-flex min-w-14 items-center justify-center">
+        {isLoading ? (
+          <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent opacity-80" />
+        ) : (
+          <span className="truncate">{children}</span>
+        )}
+      </span>
+    </button>
   );
 }

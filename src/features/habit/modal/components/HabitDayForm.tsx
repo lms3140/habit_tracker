@@ -57,8 +57,10 @@ const SUCCESS_OPTION = [
 ];
 
 export function HabitDayForm({ habitId }: FormProps) {
-  const { habitIndex } = useHabitDayModalStore();
-  const { programCloseModal, setCloseBlocked, setDirty } = useModalStore();
+  const habitIndex = useHabitDayModalStore((s) => s.habitIndex);
+  const programCloseModal = useModalStore((s) => s.programCloseModal);
+  const setCloseBlocked = useModalStore((s) => s.setCloseBlocked);
+  const setDirty = useModalStore((s) => s.setDirty);
   const { register, handleSubmit, formState } = useForm<HabitDayForm>({
     defaultValues: {
       habitComment: "",
@@ -68,15 +70,16 @@ export function HabitDayForm({ habitId }: FormProps) {
       success: true,
     },
   });
-  const { token } = useAuthTokenStore();
+  const token = useAuthTokenStore((s) => s.token);
   const { id } = useParams();
   const parsedHabitId = parseHabitId(id);
   const { success, error } = useAlert();
-
   useEffect(() => {
     setDirty(formState.isDirty);
-    return () => setDirty(false);
   }, [formState.isDirty, setDirty]);
+  useEffect(() => {
+    return () => setDirty(false);
+  }, [setDirty]);
 
   const { data: habitDays } = useQuery<HabitDay[] | null>({
     queryKey: parsedHabitId
@@ -200,7 +203,7 @@ export function HabitDayForm({ habitId }: FormProps) {
       ) : null}
       <div className="flex justify-end">
         <Button
-          disabled={saveHabitDayMutation.isPending}
+          isLoading={saveHabitDayMutation.isPending}
           type="submit"
           variant="primary"
         >

@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { useAuthTokenStore } from "./store/useAuthTokenStore";
+import { ButtonLink } from "./components/button/ButtonLink";
 
 function Home() {
-  const { token } = useAuthTokenStore();
+  const token = useAuthTokenStore((s) => s.token);
 
   return (
     <div className="min-h-lvh bg-ds-bg flex items-center justify-center p-6">
@@ -18,17 +19,7 @@ function Home() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <Link
-            to="/habit"
-            className="
-              w-full px-4 py-3 text-center font-semibold
-              rounded-ds bg-ds-primary hover:bg-ds-primary-hover
-              text-ds-ink transition-all active:scale-95
-              focus:outline-none focus:ring-2 focus:ring-ds-ring focus:ring-offset-2 focus:ring-offset-ds-bg
-            "
-          >
-            습관
-          </Link>
+          <ButtonLink to="/habit">습관</ButtonLink>
 
           {!token && (
             <Link

@@ -4,7 +4,7 @@ import { useAuthTokenStore } from "../store/useAuthTokenStore";
 const AUTH_REASON_KEY = "auth-reason";
 
 export function ProtectedLayout() {
-  const { token } = useAuthTokenStore();
+  const token = useAuthTokenStore((s) => s.token);
   const location = useLocation();
   if (!token) {
     const reason = sessionStorage.getItem(AUTH_REASON_KEY);

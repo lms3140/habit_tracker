@@ -4,12 +4,11 @@ import { useAuthTokenStore } from "../store/useAuthTokenStore";
 import { getMe } from "../features/auth/apis/auth";
 import { useEffect } from "react";
 import { useModalStore } from "../store/useModalStore";
-import { ThemeSwitcher } from "../components/themeSwitcher/themeSwitcher";
 
 export function RootLayout() {
   const token = useAuthTokenStore((s) => s.token);
   const location = useLocation();
-  const { programCloseModal } = useModalStore();
+  const programCloseModal = useModalStore((s) => s.programCloseModal);
 
   useEffect(() => {
     programCloseModal();
@@ -25,7 +24,6 @@ export function RootLayout() {
 
   return (
     <div className="min-h-dvh max-h-full pt-10 pb-10 bg-ds-bg">
-      <ThemeSwitcher />
       <Outlet />
     </div>
   );

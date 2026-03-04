@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { Button } from "../../components/button/Button";
+import { ButtonLink } from "../../components/button/ButtonLink";
 
 export function NotFoundPage() {
   const navigate = useNavigate();
@@ -12,20 +14,20 @@ export function NotFoundPage() {
         </p>
 
         <div className="flex gap-2">
-          <button
+          <Button
             type="button"
             onClick={() => navigate(-1)}
             className="px-4 py-2 rounded-ds border border-ds-border bg-ds-surface text-ds-ink"
           >
             뒤로가기
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate("/", { replace: true })}
+          </Button>
+          <ButtonLink
+            to="/"
+            replace
             className="px-4 py-2 rounded-ds bg-ds-primary text-ds-ink"
           >
             홈으로
-          </button>
+          </ButtonLink>
         </div>
       </div>
     </div>
