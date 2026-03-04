@@ -7,18 +7,21 @@ import { useModalStore } from "../../../../store/useModalStore";
 import { useHabitModalStore } from "../../store/HabitModalStore";
 import { habitQueryKeys } from "../../habitQueryKeys";
 import { useEffect } from "react";
+import { Button } from "../../../../components/button/Button";
 
 type HabitUpdateForm = {
   habitTitle: string;
 };
 
 export function HabitUpdateForm() {
-  const { habitCard } = useHabitModalStore();
+  const habitCard = useHabitModalStore((s) => s.habitCard);
   const { register, handleSubmit, formState } = useForm<HabitUpdateForm>({
     defaultValues: { habitTitle: habitCard?.habitTitle ?? "" },
   });
-  const { token } = useAuthTokenStore();
-  const { programCloseModal, resetForceEdit, setDirty } = useModalStore();
+  const token = useAuthTokenStore((s) => s.token);
+  const programCloseModal = useModalStore((s) => s.programCloseModal);
+  const resetForceEdit = useModalStore((s) => s.resetForceEdit);
+  const setDirty = useModalStore((s) => s.setDirty);
 
   useEffect(() => {
     setDirty(formState.isDirty);
@@ -90,7 +93,7 @@ export function HabitUpdateForm() {
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             className="
             self-end
@@ -103,7 +106,7 @@ export function HabitUpdateForm() {
           "
           >
             수정
-          </button>
+          </Button>
         </form>
       </div>
     </div>

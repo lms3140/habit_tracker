@@ -1,3 +1,5 @@
+import { Button } from "../button/Button";
+
 type ErrorStateProps = {
   title?: string;
   message?: string;
@@ -16,13 +18,13 @@ export function ErrorStateComponent({
 
       {onRetry && (
         <div className="mt-4">
-          <button
+          <Button
             type="button"
             onClick={onRetry}
             className="rounded-xl border border-ds-border bg-ds-bg px-4 py-2 text-sm font-medium text-ds-ink hover:opacity-90"
           >
             다시 시도
-          </button>
+          </Button>
         </div>
       )}
     </div>

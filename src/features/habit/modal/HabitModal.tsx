@@ -3,7 +3,7 @@ import { HabitAddForm } from "./components/HabitAddForm";
 import { HabitUpdateForm } from "./components/HabitUpdateForm";
 
 export function HabitModal() {
-  const { forceEdit } = useModalStore();
+  const forceEdit = useModalStore((s) => s.forceEdit);
 
   return (
     <div className="w-full">

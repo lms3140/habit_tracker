@@ -8,11 +8,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiUrl } from "../../../../apis/env";
 import { useAuthTokenStore } from "../../../../store/useAuthTokenStore";
 import { habitQueryKeys } from "../../habitQueryKeys";
+import { Button } from "../../../../components/button/Button";
 
 export function HabitCardMenu({ habitCardObj }: HabitCardProps) {
-  const { openModal, setForceEdit } = useModalStore();
-  const { setHabitCard, reset } = useHabitModalStore();
-  const { token } = useAuthTokenStore();
+  const openModal = useModalStore((s) => s.openModal);
+  const setForceEdit = useModalStore((s) => s.setForceEdit);
+  const setHabitCard = useHabitModalStore((s) => s.setHabitCard);
+  const reset = useHabitModalStore((s) => s.reset);
+  const token = useAuthTokenStore((s) => s.token);
   useEffect(() => {
     return () => reset();
   }, [reset]);
@@ -51,35 +54,27 @@ export function HabitCardMenu({ habitCardObj }: HabitCardProps) {
   return (
     <div className="flex text-xl justify-end">
       <div>
-        <button
-          className="p-2
-                    rounded-ds-pill
-                    text-ds-ink-muted
-                    transition-all duration-150
-                    hover:bg-ds-accent
-                    hover:text-ds-ink
-                    hover:scale-105
-                    active:scale-95"
+        <Button
+          type="button"
+          variant="primary"
+          size="icon"
           onClick={handleEditBtnClick}
+          ghostMode
         >
           <TbEdit />
-        </button>
+        </Button>
       </div>
       <div>
-        <button
-          className="p-2
-                    rounded-ds-pill
-                    text-ds-ink-muted
-                    transition-all duration-150
-                    hover:bg-red-50
-                    hover:text-red-600
-                    hover:scale-105
-                    active:scale-95"
+        <Button
+          type="button"
+          variant="destructive"
+          size="icon"
           disabled={deleteHabitMutation.isPending}
           onClick={handleRemoveBtnClick}
+          ghostMode
         >
           <TbTrashX />
-        </button>
+        </Button>
       </div>
     </div>
   );

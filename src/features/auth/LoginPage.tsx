@@ -3,9 +3,10 @@ import { postData, ApiError } from "../../apis/fetch";
 import { apiUrl } from "../../apis/env";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthTokenStore } from "../../store/useAuthTokenStore";
+import { Button } from "../../components/button/Button";
 
 export function LoginPage() {
-  const { setToken } = useAuthTokenStore();
+  const setToken = useAuthTokenStore((s) => s.setToken);
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ export function LoginPage() {
         "
         />
 
-        <button
+        <Button
           type="submit"
           className="
           w-full px-4 py-3
@@ -91,7 +92,7 @@ export function LoginPage() {
         "
         >
           로그인
-        </button>
+        </Button>
         {isExpired && (
           <div className="text-ds-ink-muted text-sm text-center">
             세션이 만료되었습니다. 다시 로그인해주세요.

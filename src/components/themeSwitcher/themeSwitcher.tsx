@@ -1,4 +1,5 @@
 import { useThemeStore, type DsTheme } from "../../store/useThemeStore";
+import { Button } from "../button/Button";
 
 const LABEL: Record<DsTheme, string> = {
   white: "화이트",
@@ -15,13 +16,13 @@ export function ThemeSwitcher() {
   return (
     <div className="flex items-center gap-2">
       {/* 순환 버튼 */}
-      <button
+      <Button
         type="button"
         onClick={cycleTheme}
         className="h-10 rounded-ds border border-ds-border bg-ds-surface px-4 text-ds-ink shadow-ds hover:bg-ds-accent"
       >
         테마: {LABEL[theme]} (순환)
-      </button>
+      </Button>
 
       {/* 직접 선택 */}
       <select

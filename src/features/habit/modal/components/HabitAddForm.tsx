@@ -7,13 +7,15 @@ import { postAuthData } from "../../../../apis/fetch";
 import { apiUrl } from "../../../../apis/env";
 import { habitQueryKeys } from "../../habitQueryKeys";
 import { useEffect } from "react";
+import { Button } from "../../../../components/button/Button";
 
 type AddHabitForm = {
   habitTitle: string;
 };
 export function HabitAddForm() {
-  const { token } = useAuthTokenStore();
-  const { programCloseModal, setDirty } = useModalStore();
+  const token = useAuthTokenStore((s) => s.token);
+  const programCloseModal = useModalStore((s) => s.programCloseModal);
+  const setDirty = useModalStore((s) => s.setDirty);
   const { success, error } = useAlert();
   const { register, handleSubmit, formState } = useForm<AddHabitForm>({
     defaultValues: {
@@ -87,7 +89,7 @@ export function HabitAddForm() {
           "
           />
 
-          <button
+          <Button
             type="submit"
             className="
             self-end
@@ -100,7 +102,7 @@ export function HabitAddForm() {
           "
           >
             등록
-          </button>
+          </Button>
         </form>
       </div>
     </div>
