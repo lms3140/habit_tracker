@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { useAuthTokenStore } from "./store/useAuthTokenStore";
 import { ButtonLink } from "./components/button/ButtonLink";
+import { Page } from "./components/page/Page";
+import { Bounce, toast } from "react-toastify";
 
 function Home() {
   const token = useAuthTokenStore((s) => s.token);
 
   return (
-    <div className="min-h-lvh bg-ds-bg flex items-center justify-center p-6">
+    <Page className="flex items-center justify-center p-6">
       <div className="w-full max-w-md bg-ds-surface border border-ds-border rounded-ds-lg shadow-ds p-6 space-y-5">
         <div>
           <h1 className="text-2xl font-bold text-ds-ink">홈</h1>
@@ -45,7 +47,7 @@ function Home() {
           </span>
         </div>
       </div>
-    </div>
+    </Page>
   );
 }
 

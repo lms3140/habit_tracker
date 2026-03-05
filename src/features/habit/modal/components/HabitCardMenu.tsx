@@ -43,11 +43,9 @@ export function HabitCardMenu({ habitCardObj }: HabitCardProps) {
 
   const handleRemoveBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const res = confirm("진짜?");
+    const res = confirm("정말 삭제하시겠습니까?");
     if (res) {
       deleteHabitMutation.mutate(habitCardObj.habitId);
-    } else {
-      alert("ㄴㄴ");
     }
   };
 
