@@ -16,6 +16,8 @@ import { NotFoundPage } from "../error/NotFoundPage";
 import { ErrorStateComponent } from "../../components/ErrorState/ErrorStateComponent";
 import { habitQueryKeys } from "./habitQueryKeys";
 import { Button } from "../../components/button/Button";
+import { Page } from "../../components/page/Page";
+import { Container } from "../../components/container/Container";
 
 const stateMap: Record<HabitCompleted | "EMPTY", string> = {
   SUCCESS:
@@ -151,61 +153,60 @@ export function Habit() {
   }
 
   return (
-    <div className="">
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="bg-ds-surface border border-ds-border rounded-ds-lg shadow-ds px-6 py-7">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="text-lg font-semibold text-ds-ink">
-              {habitData?.habitTitle ?? "습관"}
-              {isLoading && (
-                <span className="ml-2 text-sm font-normal text-ds-ink-muted">
-                  불러오는 중…
-                </span>
-              )}
-            </div>
-
-            <div className="text-sm text-ds-ink-muted flex items-center gap-3">
-              <span>30일</span>
-              <Button
-                type="button"
-                disabled={!data || isLoading}
-                onClick={() => {
-                  if (!data) return;
-                  exportCsv(data, "list.csv");
-                }}
-                className={`rounded-ds px-3 py-1 border border-ds-border ${
-                  !data || isLoading
-                    ? "opacity-60 cursor-not-allowed"
-                    : "hover:bg-ds-accent"
-                }`}
-              >
-                export
-              </Button>
-            </div>
+    <Page>
+      <Container className="bg-ds-surface border border-ds-border rounded-ds-lg shadow-ds px-6 py-7 mb-5">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="text-lg font-semibold text-ds-ink">
+            {habitData?.habitTitle ?? "습관"}
+            {isLoading && (
+              <span className="ml-2 text-sm font-normal text-ds-ink-muted">
+                불러오는 중…
+              </span>
+            )}
           </div>
 
-          {/* Empty 안내*/}
-          {!isLoading && (data?.length ?? 0) === 0 && (
-            <div className="mt-4 rounded-ds border border-ds-border bg-ds-bg p-3 text-sm text-ds-ink">
-              아직 기록이 없습니다.
-              <span className="text-ds-ink-muted">
-                {" "}
-                날짜를 눌러 첫 기록을 남겨보세요.
-              </span>
-            </div>
-          )}
+          <div className="text-sm text-ds-ink-muted flex items-center gap-3">
+            <span>30일</span>
+            <Button
+              type="button"
+              disabled={!data || isLoading}
+              onClick={() => {
+                if (!data) return;
+                exportCsv(data, "list.csv");
+              }}
+              className={`rounded-ds px-3 py-1 border border-ds-border ${
+                !data || isLoading
+                  ? "opacity-60 cursor-not-allowed"
+                  : "hover:bg-ds-accent"
+              }`}
+            >
+              export
+            </Button>
+          </div>
+        </div>
 
-          {/* Grid */}
-          <div className="mt-7 flex justify-center">
-            <div className="grid grid-cols-5 gap-4">
-              {days.map((habitDay, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => handleClickDay(i)}
-                  disabled={isLoading}
-                  className={`
+        {/* Empty 안내*/}
+        {!isLoading && (data?.length ?? 0) === 0 && (
+          <div className="mt-4 rounded-ds border border-ds-border bg-ds-bg p-3 text-sm text-ds-ink">
+            아직 기록이 없습니다.
+            <span className="text-ds-ink-muted">
+              {" "}
+              날짜를 눌러 첫 기록을 남겨보세요.
+            </span>
+          </div>
+        )}
+
+        {/* Grid */}
+        <div className="mt-7 flex justify-center">
+          <div className="grid grid-cols-5 gap-4">
+            {days.map((habitDay, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => handleClickDay(i)}
+                disabled={isLoading}
+                className={`
                     w-12 h-12 rounded-ds text-sm font-medium
                     flex items-center justify-center border transition
                     active:scale-[0.98]
@@ -213,31 +214,30 @@ export function Habit() {
                     ${stateMap[habitDay?.completed ?? "EMPTY"]}
                     ${isLoading ? "opacity-60 cursor-not-allowed" : ""}
                   `}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
+              >
+                {i + 1}
+              </button>
+            ))}
           </div>
         </div>
+      </Container>
 
-        <div className="bg-ds-surface border border-ds-border rounded-ds-lg shadow-ds px-6 py-7">
-          <h3 className="text-sm font-semibold text-ds-ink mb-2">
-            성공/실패 비율
-          </h3>
+      <Container className="bg-ds-surface border border-ds-border rounded-ds-lg shadow-ds px-6 py-7">
+        <h3 className="text-sm font-semibold text-ds-ink mb-2">
+          성공/실패 비율
+        </h3>
 
-          {/* 차트 null 방어*/}
-          <HabitPieChart habitList={data ?? null} />
-        </div>
+        {/* 차트 null 방어*/}
+        <HabitPieChart habitList={data ?? null} />
+      </Container>
 
-        <Modal
-          isOpen={isModalOpen}
-          onRequestClose={handleModalClose}
-          isCloseBlocked={isCloseBlocked}
-        >
-          <HabitDayModal />
-        </Modal>
-      </div>
-    </div>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={handleModalClose}
+        isCloseBlocked={isCloseBlocked}
+      >
+        <HabitDayModal />
+      </Modal>
+    </Page>
   );
 }

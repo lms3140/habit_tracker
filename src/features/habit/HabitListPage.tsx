@@ -15,6 +15,7 @@ import { habitQueryKeys } from "./habitQueryKeys";
 import { HabitModal } from "./modal/HabitModal";
 import { useCallback, useMemo, useState } from "react";
 import { Button } from "../../components/button/Button";
+import { Page } from "../../components/page/Page";
 
 const PAGE_SIZE = 2;
 
@@ -67,7 +68,7 @@ export function HabitListPage() {
     closeModal();
   }, [closeModal]);
   return (
-    <div className="min-h-dvh bg-ds-bg">
+    <Page>
       <header className="sticky top-0 z-10 border-b border-ds-border bg-ds-bg/80 backdrop-blur">
         <Container>
           <div className="flex items-center justify-between gap-3 py-4">
@@ -150,17 +151,16 @@ export function HabitListPage() {
                 </Button>
               </div>
             ) : null}
-
-            <Modal
-              isOpen={isModalOpen}
-              onRequestClose={handleModalClose}
-              isCloseBlocked={isCloseBlocked}
-            >
-              <HabitModal />
-            </Modal>
           </div>
         </Container>
       </main>
-    </div>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={handleModalClose}
+        isCloseBlocked={isCloseBlocked}
+      >
+        <HabitModal />
+      </Modal>
+    </Page>
   );
 }
