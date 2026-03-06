@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import { useAuthTokenStore } from "./store/useAuthTokenStore";
 import { ButtonLink } from "./components/button/ButtonLink";
 import { Page } from "./components/page/Page";
-import { Bounce, toast } from "react-toastify";
+import { useAuthTokenStore } from "./store/useAuthTokenStore";
 
 function Home() {
   const token = useAuthTokenStore((s) => s.token);
