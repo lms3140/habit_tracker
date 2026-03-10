@@ -103,8 +103,6 @@ export function Habit() {
     setHabitIndex(index);
     openModal();
   };
-
-  // habitDetail 에러 처리
   if (isHabitError && habitError instanceof ApiError) {
     if (habitError.status === 404) return <NotFoundPage />;
 
@@ -118,8 +116,6 @@ export function Habit() {
       );
     }
   }
-
-  // dayList 에러처리
   if (isError && error instanceof ApiError) {
     if (error.status === 404) return <NotFoundPage />;
 
@@ -155,7 +151,6 @@ export function Habit() {
   return (
     <Page>
       <Container className="bg-ds-surface border border-ds-border rounded-ds-lg shadow-ds px-6 py-7 mb-5">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div className="text-lg font-semibold text-ds-ink">
             {habitData?.habitTitle ?? "습관"}
@@ -185,8 +180,6 @@ export function Habit() {
             </Button>
           </div>
         </div>
-
-        {/* Empty 안내*/}
         {!isLoading && (data?.length ?? 0) === 0 && (
           <div className="mt-4 rounded-ds border border-ds-border bg-ds-bg p-3 text-sm text-ds-ink">
             아직 기록이 없습니다.
@@ -196,8 +189,6 @@ export function Habit() {
             </span>
           </div>
         )}
-
-        {/* Grid */}
         <div className="mt-7 flex justify-center">
           <div className="grid grid-cols-5 gap-4">
             {days.map((habitDay, i) => (
@@ -226,8 +217,6 @@ export function Habit() {
         <h3 className="text-sm font-semibold text-ds-ink mb-2">
           성공/실패 비율
         </h3>
-
-        {/* 차트 null 방어*/}
         <HabitPieChart habitList={data ?? null} />
       </Container>
 

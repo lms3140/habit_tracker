@@ -15,7 +15,6 @@ export function ThemeSwitcher() {
 
   return (
     <div className="flex items-center gap-2">
-      {/* 순환 버튼 */}
       <Button
         type="button"
         onClick={cycleTheme}
@@ -23,8 +22,6 @@ export function ThemeSwitcher() {
       >
         테마: {LABEL[theme]} (순환)
       </Button>
-
-      {/* 직접 선택 */}
       <select
         value={theme}
         onChange={(e) => setTheme(e.target.value as DsTheme)}

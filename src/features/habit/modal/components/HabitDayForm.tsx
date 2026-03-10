@@ -7,6 +7,7 @@ import { useAuthTokenStore } from "../../../../store/useAuthTokenStore";
 import { useModalStore } from "../../../../store/useModalStore";
 import { useHabitDayModalStore } from "../../store/HabitDayStore";
 import type {
+  HabitCompleted,
   HabitCondition,
   HabitDay,
   HabitDifficulty,
@@ -24,7 +25,7 @@ type HabitDayForm = {
   habitDifficulty: HabitDifficulty;
   habitCondition: HabitCondition;
   habitPlace: HabitPlace;
-  success: boolean;
+  completed: HabitCompleted;
 };
 
 type FormProps = {
@@ -61,22 +62,25 @@ export function HabitDayForm({ habitId }: FormProps) {
   const programCloseModal = useModalStore((s) => s.programCloseModal);
   const setCloseBlocked = useModalStore((s) => s.setCloseBlocked);
   const setDirty = useModalStore((s) => s.setDirty);
-  const { register, handleSubmit, formState } = useForm<HabitDayForm>({
+
+  const { register, handleSubmit, formState, reset } = useForm<HabitDayForm>({
     defaultValues: {
       habitComment: "",
       habitDifficulty: "NORMAL",
       habitCondition: "NORMAL",
       habitPlace: "HOME",
-      success: true,
+      completed: "SUCCESS",
     },
   });
   const token = useAuthTokenStore((s) => s.token);
   const { id } = useParams();
   const parsedHabitId = parseHabitId(id);
   const { success, error } = useAlert();
+
   useEffect(() => {
     setDirty(formState.isDirty);
   }, [formState.isDirty, setDirty]);
+
   useEffect(() => {
     return () => setDirty(false);
   }, [setDirty]);
@@ -91,6 +95,17 @@ export function HabitDayForm({ habitId }: FormProps) {
   });
 
   const habitDay = habitDays?.find((d) => d.habitIndex === habitIndex);
+  useEffect(() => {
+    if (!habitDay) return;
+
+    reset({
+      habitComment: habitDay.habitComment ?? "",
+      habitDifficulty: habitDay.habitDifficulty,
+      habitCondition: habitDay.habitCondition,
+      habitPlace: habitDay.habitPlace,
+      completed: habitDay.completed,
+    });
+  }, [habitDay, reset]);
 
   const queryClient = useQueryClient();
   const saveHabitDayMutation = useMutation({
@@ -106,7 +121,7 @@ export function HabitDayForm({ habitId }: FormProps) {
           habitPlace: data.habitPlace,
           habitDifficulty: data.habitDifficulty,
           habitCondition: data.habitCondition,
-          completed: data.success,
+          completed: data.completed,
         },
         token,
       });
@@ -151,7 +166,7 @@ export function HabitDayForm({ habitId }: FormProps) {
     >
       <SegmentedRadioGroup
         register={register}
-        name={"success"}
+        name={"completed"}
         title="성공여부"
         options={SUCCESS_OPTION}
       />
