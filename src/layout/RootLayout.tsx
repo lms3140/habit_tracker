@@ -8,7 +8,7 @@ import { Bounce, ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
-const toastContextClass: Record<string, string> = {
+export const toastContextClass: Record<string, string> = {
   success: "bg-ds-bg text-ds-ink",
   error: "bg-ds-bg text-ds-ink",
   info: "bg-ds-bg text-ds-ink",
