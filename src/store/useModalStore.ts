@@ -25,12 +25,10 @@ export const useModalStore = create<ModalState>((set, get) => ({
     set({
       isModalOpen: true,
     }),
-  // 사용자가 닫을때
   closeModal: () => {
     if (get().isCloseBlocked) return;
     set({ isModalOpen: false, forceEdit: false, isDirty: false });
   },
-  // 프로그램에서 닫는 역할
   programCloseModal: () => {
     set({
       isModalOpen: false,

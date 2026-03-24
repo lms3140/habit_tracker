@@ -30,7 +30,6 @@ const CONDITION_LABEL: Record<HabitCondition, string> = {
 export function HabitDayInfo({ habitDay }: { habitDay: HabitDay }) {
   return (
     <div className="w-full space-y-4">
-      {/* 날짜 */}
       <div className="flex items-center justify-between p-3 bg-ds-surface rounded-ds border border-ds-border shadow-ds">
         <span className="text-sm font-medium text-ds-ink-muted">생성일</span>
         <span className="text-sm text-ds-ink">
@@ -39,16 +38,12 @@ export function HabitDayInfo({ habitDay }: { habitDay: HabitDay }) {
             : dayjs(habitDay.createdAt).format("YYYY-MM-DD")}
         </span>
       </div>
-
-      {/* 진행 현황 */}
       <div className="flex items-center justify-between p-3 bg-ds-accent rounded-ds border border-ds-border shadow-ds">
         <span className="text-sm font-medium text-ds-ink-muted">진행 현황</span>
         <span className="text-lg font-semibold text-ds-ink">
           {habitDay.habitIndex + 1}번째 날
         </span>
       </div>
-
-      {/* 장소/난이도/컨디션 */}
       <div className="p-3 bg-ds-surface rounded-ds border border-ds-border shadow-ds space-y-2">
         <p className="text-sm font-medium text-ds-ink-muted">상태</p>
 
@@ -77,8 +72,6 @@ export function HabitDayInfo({ habitDay }: { habitDay: HabitDay }) {
           </span>
         </div>
       </div>
-
-      {/* 메모 */}
       <div className="p-3 bg-ds-surface rounded-ds border border-ds-border shadow-ds">
         <p className="text-sm font-medium text-ds-ink-muted mb-2">메모</p>
 

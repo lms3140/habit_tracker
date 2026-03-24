@@ -15,7 +15,7 @@ export function LoginPage() {
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const resp = await postData<{ token: string }>({
+      const resp = await postData<{ token: string; status: string }>({
         url: `${apiUrl}/user/login`,
         data: {
           userId: id,
@@ -24,13 +24,17 @@ export function LoginPage() {
       });
       if (!resp) throw new Error("서버 응답이 없습니다.");
       const token = resp.token;
+      if (resp.status === "failed") {
+        setPw("");
+        throw new Error("로그인 확인");
+      }
       setToken(token);
       navigate("/");
     } catch (err) {
       if (err instanceof ApiError) {
         alert(err.message);
-      } else {
-        console.error(err);
+      } else if (err instanceof Error) {
+        alert(err.message);
       }
     }
   };

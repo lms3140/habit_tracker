@@ -87,8 +87,6 @@ export function HabitListPage() {
           </div>
         </Container>
       </header>
-
-      {/* Main */}
       <main>
         <Container>
           <div className="py-8">
