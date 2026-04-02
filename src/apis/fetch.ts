@@ -80,7 +80,6 @@ async function request<T>({
     }
 
     if (!response.ok) {
-      // MVP: 서버 에러 메시지를 굳이 파싱하지 않고 기본 메시지로 통일
       throw new ApiError({
         code: "HTTP_ERROR",
         status: response.status,
