@@ -1,38 +1,42 @@
-import { useState, type FormEvent } from "react";
 import { postData, ApiError } from "../../apis/fetch";
 import { apiUrl } from "../../apis/env";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthTokenStore } from "../../store/useAuthTokenStore";
 import { Button } from "../../components/button/Button";
+import { useForm } from "react-hook-form";
+
+type LoginInfo = {
+  userId: string;
+  password: string;
+};
 
 export function LoginPage() {
   const setToken = useAuthTokenStore((s) => s.setToken);
-  const [id, setId] = useState("");
-  const [pw, setPw] = useState("");
+  const { register, handleSubmit, reset } = useForm<LoginInfo>();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleLogin = async (data: LoginInfo) => {
     try {
       const resp = await postData<{ token: string; status: string }>({
         url: `${apiUrl}/user/login`,
         data: {
-          userId: id,
-          password: pw,
+          userId: data.userId,
+          password: data.password,
         },
       });
       if (!resp) throw new Error("서버 응답이 없습니다.");
+
       const token = resp.token;
       if (resp.status === "failed") {
-        setPw("");
-        throw new Error("로그인 확인");
+        reset({ userId: data.userId, password: "" });
+        throw new Error("아이디 또는 비밀번호를 확인해주세요");
       }
       setToken(token);
       navigate("/");
     } catch (err) {
       if (err instanceof ApiError) {
-        alert(err.message);
+        alert(err.message); // 에러 메세지
       } else if (err instanceof Error) {
         alert(err.message);
       }
@@ -45,7 +49,7 @@ export function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-ds-bg p-6">
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleSubmit(handleLogin)}
         className="w-full max-w-sm bg-ds-surface rounded-ds-lg shadow-ds p-8 space-y-6 border border-ds-border"
       >
         <div>
@@ -55,8 +59,7 @@ export function LoginPage() {
 
         <input
           type="text"
-          value={id}
-          onChange={(e) => setId(e.currentTarget.value)}
+          {...register("userId")}
           placeholder="아이디"
           className="
           w-full px-4 py-3
@@ -70,8 +73,7 @@ export function LoginPage() {
 
         <input
           type="password"
-          value={pw}
-          onChange={(e) => setPw(e.currentTarget.value)}
+          {...register("password")}
           placeholder="비밀번호"
           className="
           w-full px-4 py-3

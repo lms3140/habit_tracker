@@ -6,16 +6,14 @@ type AuthTokenState = {
   token: string | null;
   setToken: (token: string | null) => void;
   clearToken: () => void;
-  isAuthed: () => boolean;
 };
 
 export const useAuthTokenStore = create<AuthTokenState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       token: null,
       setToken: (token) => set({ token }),
       clearToken: () => set({ token: null }),
-      isAuthed: () => Boolean(get().token),
     }),
     {
       name: "auth-token",
